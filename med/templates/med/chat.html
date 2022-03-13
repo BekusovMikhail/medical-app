@@ -1,0 +1,66 @@
+{% extends "med/base.html" %}
+
+{% block content %}
+	<!-- <div class="container" style="display:flex; flex-direction:row; justify-content: center; flex-grow:3;"> -->
+    <div class="card" style="height: 0px; width: 35rem; margin: 1rem; align-self: center; flex-grow:3; display:flex; flex-direction:column;">
+    <div class="card-header" style="display:flex; justify-content: space-between; align-items: center;">
+      <div>{{ user2.name }} {{ user2.surname }}</div>
+    </div>
+     <div class="card-body" id="cardBodyChat" style="padding:0.5rem; overflow-y: scroll; flex-grow:3; display:flex; flex-direction:column;">
+     	{% for message in messages %}
+     	 	{% if message.sender == user1.id %}
+     		<div class="list-group-item" style="border: none; text-align: right;">{{user1.name}} {{user1.surname}}: {{message.text}}</div>
+     		{% else %}
+     		<div class="list-group-item" style="border: none; text-align: left;">{{user2.name}} {{user2.surname}}: {{message.text}}</div>
+     		{% endif %}
+     	{% endfor %}
+     </div>
+     <script type="text/javascript">
+     	window.onload = () => {
+     		cardBodyChat.scrollTop = cardBodyChat.scrollHeight;
+     	};
+     </script>
+     <form id='messageForm' style="display:flex; flex-direction:row; margin:5px;">
+        <input type="text" name="text" class="form-control" id="text" placeholder="Введите сообщение" style="margin-right:10px;">
+        <input type="submit" id="buttonSend" class="btn btn-primary" value='Отправить'>
+        <input type="hidden" name="chatId" value="{{ chat.id }}">
+        <input type="hidden" name="sender" value="{{ user1.id }}">
+        <script type="text/javascript">
+	      messageForm.onsubmit = async (e) => {
+	        e.preventDefault();
+
+	        let response = await fetch('/api/sendmessage', {
+	          method: 'POST',
+	          body: new FormData(messageForm)
+	        });
+
+	        let result = await response.text();
+
+	        if (response.status == 201) {
+	          let block = '<div class="list-group-item" style="border: none; text-align: right;">{{user1.name}} {{user1.surname}}: '+ text.value +'</div>'
+	          text.value = ""
+	          cardBodyChat.insertAdjacentHTML("beforeend", block);
+	          cardBodyChat.scrollTop = cardBodyChat.scrollHeight;
+	        } else {
+	          window.location.replace("dashboard");
+	        }
+	      };
+	    </script>
+      </form>
+      <script type="text/javascript">
+      	let socket = new WebSocket("ws://{{ ip }}:8081")
+
+      	socket.onopen = function(e) {
+				  socket.send("{{ user1.id }}");
+				};
+
+      	socket.onmessage = function(event) {
+				  let incomingMessage = event.data;
+				  let block = '<div class="list-group-item" style="border: none; text-align: left;">{{user2.name}} {{user2.surname}}: '+ incomingMessage +'</div>'
+          cardBodyChat.insertAdjacentHTML("beforeend", block);
+	        cardBodyChat.scrollTop = cardBodyChat.scrollHeight;
+		};
+  		</script>
+    </div>
+  <!-- </div> -->
+{% endblock content %}

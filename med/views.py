@@ -69,3 +69,12 @@ def chat(request):
             return HttpResponseRedirect("/chats")
     else:
         return render(request, 'med/index.html')
+
+def notifications(request):
+    if "user_id" in request.session:
+        user = User.objects.get(id=request.session['user_id'])
+        notifications = user.notification_set.all()
+        # notifications = user.notifications_set.all()
+        return render(request, 'med/notifications.html', context={'notifications': notifications})
+    else:
+        return render(request, 'med/dashboard.html', context={'name': "anon", 'surname': "anon"})

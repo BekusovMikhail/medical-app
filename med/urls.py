@@ -9,4 +9,5 @@ urlpatterns = [
     path('logout', views.logout, name='logout'),
     path('chats', views.chats, name='chats'),
     path('chat', views.chat, name='chat'),
+    path('notifications', views.notifications, name='notifications'),
 ]

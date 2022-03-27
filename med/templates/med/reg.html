@@ -20,30 +20,105 @@
   <div class="card-header">
     Login
   </div>
-  <div class="card-body">
+  <div class="card-body" id='card1'>
     <form id="reg" method="post">
       {% csrf_token %}
     <div class="mb-3">
-      <label for="name" class="form-label">Email address</label>
-      <input type="text" name="name" form="reg" class="form-control" id="name" placeholder="name@example.com">
+      <label for="name" class="form-label">Name</label>
+      <input type="text" name="name" form="reg" class="form-control" id="name" placeholder="Name" required="required">
     </div>
     <div class="mb-3">
-      <label for="surname" class="form-label">Email address</label>
-      <input type="text" name="surname" form="reg" class="form-control" id="surname" placeholder="name@example.com">
+      <label for="surname" class="form-label">Surname</label>
+      <input type="text" name="surname" form="reg" class="form-control" id="surname" placeholder="Surname" required="required">
     </div>
     <div class="mb-3">
       <label for="email" class="form-label">Email address</label>
-      <input type="email" name="email" form="reg" class="form-control" id="email" placeholder="name@example.com">
+      <input type="email" name="email" form="reg" class="form-control" id="email" placeholder="name@example.com" required="required">
     </div>
     <div class="mb-3">
       <label for="phone" class="form-label">Phone number</label>
-      <input type="number" name="phone" form="reg" class="form-control" id="phone"></textarea>
+      <input type="number" name="phone" form="reg" class="form-control" id="phone" required="required"></textarea>
     </div>
    <div class="mb-3">
       <label for="password" class="form-label">Password</label>
-      <input type="password" name="password" form="reg" class="form-control" id="password"></textarea>
+      <input type="password" name="password" form="reg" class="form-control" id="password" required="required"></textarea>
     </div>
     <input type='submit' form="reg" class="btn btn-primary" style="width:100%" value='Зарегистрироваться'></input>
+    <script type="text/javascript">
+        let code;
+        reg.onsubmit = async (e) => {
+          e.preventDefault();
+          if (!reg.checkValidity()){
+            return
+          }
+          card1.hidden = 'hidden'
+          card2.removeAttribute('hidden')
+          let response = await fetch('/api/sendcode', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({'email': email.value})
+          });
+
+          if (response.status == 200) {
+            result = await response.json()
+            code = result['code']
+          } else {
+            window.location.replace("dashboard");
+          }
+        };
+      </script>
+    </form>
+  </div>
+  <div class="card-body" id='card2' hidden='hidden'>
+    <form id="codeForm" method="post">
+    <div class="mb-3" id='codeContainer'>
+      <label for="name" class="form-label">Подтвердите свой email</label>
+      <input type="text" name="name" form="codeForm" class="form-control" id="codeField" placeholder="VerificationCode">
+    </div>
+     <div class="mb-3">
+      <button type="button" class="btn btn-info" id="repeatCode" style="width:100%" >Отправить код еще раз</button>
+    </div>
+    <input type='submit' form="codeForm" class="btn btn-primary" style="width:100%" value='Подтвердить'></input>
+    <script type="text/javascript">
+        codeForm.onsubmit = async (e) => {
+          e.preventDefault();
+          if (codeField.value == code){
+            let response = await fetch('/api/registeruser', {
+              method: 'POST',
+              body: new FormData(reg)
+            });
+
+            if (response.status == 201) {
+              window.location.replace("dashboard");
+            } else {
+              window.location.replace("dashboard");
+            }
+          } else {
+            block = '<div class="mb-3"><div class="alert alert-danger alert-dismissible fade show" role="alert" style="flex:0.5">Wrong code<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div></div>'
+            codeContainer.insertAdjacentHTML("afterend", block);
+          }
+          
+        };
+        repeatCode.onclick = async (e) => {
+          let response = await fetch('/api/sendcode', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({'email': email.value})
+          });
+
+          if (response.status == 200) {
+            result = await response.json()
+            code = result['code']
+          } else {
+            window.location.replace("dashboard");
+          }
+          
+        };
+      </script>
     </form>
   </div>
 </div>

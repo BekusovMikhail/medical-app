@@ -2,16 +2,16 @@
 
 {% block content %}
 	<!-- <div class="container" style="display:flex; flex-direction:row; justify-content: center; flex-grow:3;"> -->
-    <div class="card" style="height: 0px; width: 35rem; margin: 1rem; align-self: center; flex-grow:3; display:flex; flex-direction:column;">
+    <div class="card" style="height: 0px; width: 35rem; max-width: 95vw; margin: 1rem; align-self: center; flex-grow:3; display:flex; flex-direction:column;">
     <div class="card-header" style="display:flex; justify-content: space-between; align-items: center;">
-      <div>{{ user2.name }} {{ user2.surname }}</div>
+      <div>{{user2.first_name}} {{user2.last_name}}</div>
     </div>
      <div class="card-body" id="cardBodyChat" style="padding:0.5rem; overflow-y: scroll; flex-grow:3; display:flex; flex-direction:column;">
      	{% for message in messages %}
      	 	{% if message.sender == user1.id %}
-     		<div class="list-group-item" style="border: none; text-align: right;">{{user1.name}} {{user1.surname}}: {{message.text}}</div>
+     		<div class="list-group-item" style="border: none; text-align: right;">{{user1.first_name}} {{user1.last_name}}: {{message.text}}</div>
      		{% else %}
-     		<div class="list-group-item" style="border: none; text-align: left;">{{user2.name}} {{user2.surname}}: {{message.text}}</div>
+     		<div class="list-group-item" style="border: none; text-align: left;">{{user2.first_name}} {{user2.last_name}}: {{message.text}}</div>
      		{% endif %}
      	{% endfor %}
      </div>
@@ -37,7 +37,7 @@
 	        let result = await response.text();
 
 	        if (response.status == 201) {
-	          let block = '<div class="list-group-item" style="border: none; text-align: right;">{{user1.name}} {{user1.surname}}: '+ text.value +'</div>'
+	          let block = '<div class="list-group-item" style="border: none; text-align: right;">{{user1.first_name}} {{user1.last_name}}: '+ text.value +'</div>'
 	          text.value = ""
 	          cardBodyChat.insertAdjacentHTML("beforeend", block);
 	          cardBodyChat.scrollTop = cardBodyChat.scrollHeight;
@@ -56,7 +56,7 @@
 
       	socket.onmessage = function(event) {
 				  let incomingMessage = event.data;
-				  let block = '<div class="list-group-item" style="border: none; text-align: left;">{{user2.name}} {{user2.surname}}: '+ incomingMessage +'</div>'
+				  let block = '<div class="list-group-item" style="border: none; text-align: left;">{{user2.first_name}} {{user2.last_name}}: '+ incomingMessage +'</div>'
           cardBodyChat.insertAdjacentHTML("beforeend", block);
 	        cardBodyChat.scrollTop = cardBodyChat.scrollHeight;
 		};

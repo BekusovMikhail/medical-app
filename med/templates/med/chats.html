@@ -17,7 +17,7 @@
      <div class="card-body" style="padding:0.5rem; overflow: auto;">
       {% if users.count > 0 %}
         {% for user in users %}
-          <a href="/chat?with={{user.id}}" class="list-group-item list-group-item-action">{{user.name}} {{user.surname}}</a>
+          <a href="/chat?with={{user.id}}" class="list-group-item list-group-item-action">{{ user.first_name }} {{ user.last_name }}</a>
         {% endfor %}
       {% endif %} 
      </div>
@@ -31,7 +31,7 @@
       {% if new_users.count > 0 %}
       <div class="list-group" id="usersList">
         {% for user in new_users %}
-        <button type="button" class="list-group-item list-group-item-action" id="{{ user.id }}">{{ user.name }} {{ user.surname }}</button>
+        <button type="button" class="list-group-item list-group-item-action" id="{{ user.id }}">{{ user.first_name }} {{ user.last_name }}</button>
         {% endfor %}
       </div>
       {% endif %}

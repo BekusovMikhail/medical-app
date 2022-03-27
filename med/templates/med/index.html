@@ -26,17 +26,20 @@
       {% csrf_token %}
     <div class="mb-3">
       <label for="exampleFormControlInput1" class="form-label">Email address</label>
-      <input type="email" class="form-control" name="email" id="exampleFormControlInput1" placeholder="name@example.com">
+      <input type="email" class="form-control" name="email" id="exampleFormControlInput1" placeholder="name@example.com" required="required">
     </div>
     <div class="mb-3" id='passId'>
       <label for="exampleFormControlTextarea1" class="form-label">Password</label>
-      <input type="password" class="form-control" name="password" id="exampleFormControlTextarea1"></textarea>
+      <input type="password" class="form-control" name="password" id="exampleFormControlTextarea1" required="required"></input>
     </div>
    <div class="mb-3">
     <input type="submit" id="loginButton" class="btn btn-primary" style="width:100%" value='Login'></input>
     <script type="text/javascript">
       form.onsubmit = async (e) => {
         e.preventDefault();
+        if (!form.checkValidity()){
+            return
+          }
 
         let response = await fetch('/', {
           method: 'POST',

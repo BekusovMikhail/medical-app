@@ -97,3 +97,17 @@ def registerUser(request):
         return HttpResponse(status=201)
     else:
         return HttpResponseForbidden("Forbidden")
+
+
+@login_required
+@csrf_exempt
+def deleteNotification(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        not_id = data['notification_id']
+        notif = Notification.objects.get(id=not_id)
+        if notif:
+            notif.delete()
+            return HttpResponse(status=201)
+        else:
+            return HttpResponseForbidden("Forbidden")

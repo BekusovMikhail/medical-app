@@ -2,12 +2,43 @@
 {% block content %}
   {% if notifications.count > 0 %}
     {% for notif in notifications %}
-      <div style="display: flex; direction: row;">
+      <div class="list-item" id="{{notif.id}}" style="display: flex; direction: row;">
         <a style="align-self: flex-start;" href="/chat?with={{notif.sender.id}}" class="list-group-item list-group-item-action">{{notif.sender.first_name}} {{notif.sender.last_name}} : {{notif.text}}</a>
         <button style="align-self: flex-end; margin-right: 5px; align-self:center; background-color: red; color: white; border: 3px; height: 40px; width: 40px;" type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
     {% endfor %}
+    <script type="text/javascript">
+      let buttons = document.querySelectorAll('.list-item');
+      for (let button of buttons) {
+          button.addEventListener('click', buttClicked);
+      }
+      async function buttClicked(event)
+        { 
+          let id
+          if (event.target.tagName == 'BUTTON'){
+            id = event.target.parentElement.id
+            event.target.parentElement.remove()
+          } else if (event.target.tagName == 'SPAN'){
+            id = event.target.parentElement.parentElement.id
+            event.target.parentElement.parentElement.remove()
+          } else if (event.target.tagName == 'DIV'){
+            id = event.target.id
+            event.target.remove()
+          } else if (event.target.tagName == 'A'){
+            id = event.target.parentElement.id
+            event.target.parentElement.remove()
+          }
+
+          let response = await fetch('/api/deletenotification', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({'notification_id': id})
+          });
+        }
+    </script>
   {% endif %}
 {% endblock content %}

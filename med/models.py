@@ -36,3 +36,11 @@ class Message(models.Model):
     text = models.TextField()
     sender = models.IntegerField()
     creationDate = models.DateTimeField(auto_now_add=True)
+
+
+class Notification(models.Model):
+    name = models.CharField(max_length=20)
+    sender = models.ForeignKey(User, on_delete = models.CASCADE, related_name='sender')
+    text = models.TextField()
+    creationDate = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete = models.CASCADE)

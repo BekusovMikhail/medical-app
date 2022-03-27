@@ -78,9 +78,9 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'medDb',
-        'USER' : 'MedUser',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'meddb',
+        'USER' : 'meduser',
         'PASSWORD' : 'Qwerty2312',
         'HOST' : '127.0.0.1',
         'PORT' : '5432',

@@ -32,7 +32,8 @@ def reg(request):
 @login_required
 def dash(request):
     user = request.user
-    return render(request, 'med/dashboard.html', context={'name': user.first_name, 'surname': user.last_name})
+    notifications_count = len(user.notification_set.all())
+    return render(request, 'med/dashboard.html', context={'name': user.first_name, 'surname': user.last_name, 'notifications_count': notifications_count})
 
 
 def logout_view(request):
@@ -43,13 +44,14 @@ def logout_view(request):
 @login_required
 def chats(request):
     user = request.user
+    notifications_count = len(user.notification_set.all())
     chats = user.chat_set.all()
     users = User.objects.none()
     for chat in chats:
         users = users.union(chat.users.exclude(id=user.id))
     new_users = User.objects.exclude(id=user.id).exclude(is_staff=True)
     new_users = new_users.difference(users)
-    return render(request, 'med/chats.html', context={'users': users, 'new_users': new_users})
+    return render(request, 'med/chats.html', context={'users': users, 'new_users': new_users, 'notifications_count': notifications_count})
 
 
 @login_required
@@ -60,8 +62,18 @@ def chat(request):
     chats1 = user1.chat_set.all()
     chats2 = user2.chat_set.all()
     chat = chats1.intersection(chats2).first()
+    notifications_count = len(user1.notification_set.all())
     if chat:
         messages = chat.message_set.all()
-        return render(request, 'med/chat.html', {"user1": user1, "user2": user2, "chat": chat, "messages": messages, "ip": "127.0.0.1"})
+        return render(request, 'med/chat.html', {"user1": user1, "user2": user2, "chat": chat, "messages": messages, "ip": "127.0.0.1", 'notifications_count': notifications_count})
     else:
         return HttpResponseRedirect("/chats")
+
+@login_required
+def notifications(request):
+    user = request.user
+    notifications = user.notification_set.all()
+    
+    return render(request, 'med/notifications.html', context={'notifications': notifications, 'notifications_count': len(notifications)})
+
+

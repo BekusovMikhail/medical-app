@@ -43,6 +43,8 @@ def sendMessage(request):
         mes.sender = request.POST['sender']
         mes.save()
         target = mes.chat.users.exclude(id=mes.sender).first()
+        notification = Notification(user=target, text=mes.text, sender=User.objects.get(id=mes.sender), name="1")
+        notification.save()
         server.send_message(target.id, mes.text)
         return HttpResponse(status=201)
     else:

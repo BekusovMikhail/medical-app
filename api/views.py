@@ -45,7 +45,7 @@ def sendMessage(request):
         target = mes.chat.users.exclude(id=mes.sender).first()
         notification = Notification(user=target, text=mes.text, sender=User.objects.get(id=mes.sender), name="1")
         notification.save()
-        server.send_message(target.id, mes.text)
+        server.send_message(mes.chat.id, target.id, mes.text)
         return HttpResponse(status=201)
     else:
         return HttpResponseForbidden("Forbidden")

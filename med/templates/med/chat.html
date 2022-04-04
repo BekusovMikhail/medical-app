@@ -51,7 +51,7 @@
       	let socket = new WebSocket("ws://{{ ip }}:8081")
 
       	socket.onopen = function(e) {
-				  socket.send("{{ user1.id }}");
+				  socket.send("{{ chat.id }}&{{ user1.id }}");
 				};
 
       	socket.onmessage = function(event) {

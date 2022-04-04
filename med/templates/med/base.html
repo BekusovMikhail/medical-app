@@ -38,8 +38,8 @@
 
     .icon-button__badge {
       position: absolute;
-      top: -10px;
-      right: -10px;
+      top: -5px;
+      right: -5px;
       width: 25px;
       height: 25px;
       background: red;
@@ -51,12 +51,12 @@
     }
   </style>
 </head>
-<body style="display:flex; flex-direction: column; height:100vh;">
+<body style="display:flex; flex-direction: column; height:100vh; width: 100vw;">
 {% block header %}
- <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <div class="collapse navbar-collapse" style="justify-content:flex-start;">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
+ <nav class="navbar navbar-expand navbar-dark bg-primary" style="width: 100%;">
+    <div class="container-fluid">
+      <ul class="navbar-nav mr-auto" style="width: 100%; flex-direction: row; flex-wrap: wrap;justify-content:flex-start; align-items:center;">
+        <li class="nav-item" style="margin-left: 1rem;">
           <a class="navbar-brand" href="/dashboard">Dashboard</a>
         </li>
         <li class="nav-item">
@@ -65,16 +65,25 @@
         <li class="nav-item">
           <a class="navbar-brand" href="/chats">Чаты</a>
         </li>
+        <li class="nav-item" style="margin-left: auto;">
+          <a style="text-decoration:none;" href="/notifications" class="icon-button" type="button" class="icon-button" id="dropdownMenuButton" data-mdb-toggle="dropdown" aria-expanded="false">
+            <span class="material-icons">notifications</span>
+            <span class="icon-button__badge">{{ notifications_count }}</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="navbar-brand" href="/logout">Выйти</a>
+        </li>
       </ul>
     </div>
-    <div class="dropdown">
+    <!-- <div class="dropdown" style="align-self: flex-end;">
       <a style="text-decoration:none;" href="/notifications" class="icon-button" type="button" class="icon-button" id="dropdownMenuButton" data-mdb-toggle="dropdown" aria-expanded="false">
         <span class="material-icons">notifications</span>
         <span class="icon-button__badge">{{ notifications_count }}</span>
       </a>
     </div>
 
-    <a class="navbar-brand" style="align-self: flex-end; align-self: center;" href="/logout">Выйти</a>
+    <a class="navbar-brand" style="align-self: flex-end;" href="/logout">Выйти</a> -->
   </nav>
 {% endblock header%}
 {% block content %} {% endblock content %}

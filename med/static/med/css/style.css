@@ -1,3 +1,39 @@
 #cardBodyChat .list-group-item:first-child {
   margin-top: auto;
 }
+
+.calendar {
+  display: grid;
+  margin: 1rem;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: 1fr repeat(6, 2fr);
+  grid-gap: 1rem;
+  
+}
+
+.calendar > div {
+  box-sizing:border-box;
+  background: FFFFFF;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.calendar > div > .date {
+  align-self: flex-start;
+  font-size: 1.5rem;
+}
+
+.calendar > div > .events {
+  align-self: center;
+  margin-top: auto;
+  font-size: 1rem;
+}
+
+.calendar > div > .weekday {
+  margin: auto;
+  font-size: 1rem;
+}

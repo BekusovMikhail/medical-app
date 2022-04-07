@@ -3,6 +3,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
 from .models import *
+import datetime
+import calendar as calendar_lib
 
 
 def index(request):
@@ -69,11 +71,50 @@ def chat(request):
     else:
         return HttpResponseRedirect("/chats")
 
+
 @login_required
 def notifications(request):
     user = request.user
     notifications = user.notification_set.all()
-    
+
     return render(request, 'med/notifications.html', context={'notifications': notifications, 'notifications_count': len(notifications)})
 
 
+@login_required
+def calendar(request):
+
+    if 'y' and 'm' in request.GET:
+        y = int(request.GET['y'])
+        m = int(request.GET['m'])
+    else:
+        today = datetime.date.today()
+        y = today.year
+        m = today.month
+
+    user = request.user
+
+    cal = calendar_lib.Calendar()
+    dates = list(cal.itermonthdates(y, m))
+    days = list(cal.itermonthdays2(y, m))
+    days = list(map(list, days))
+
+    for i in range(len(dates)):
+        days[i].append(user.event_set.filter(date_time__exact=datetime.datetime.combine(dates[i], datetime.datetime.min.time())).count())
+
+    if m + 1 == 13:
+        y_next = y + 1
+        m_next = 1
+    else:
+        y_next = y
+        m_next = m + 1
+
+    if m - 1 == 0:
+        y_prev = y - 1
+        m_prev = 12
+    else:
+        y_prev = y
+        m_prev = m - 1
+
+    m_names = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']
+
+    return render(request, 'med/calendar.html', context={'days': days, 'next': [y_next, m_next], 'prev': [y_prev, m_prev], 'm_name': m_names[m-1], 'year': y, 'notifications_count': len(user.notification_set.all())})

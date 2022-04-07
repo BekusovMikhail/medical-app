@@ -77,3 +77,30 @@ def notifications(request):
     return render(request, 'med/notifications.html', context={'notifications': notifications, 'notifications_count': len(notifications)})
 
 
+@login_required
+def create_event(request):
+    user = request.user
+
+    if request.method == "POST":
+        name = request.POST['name']
+        date_time = request.POST['date_time']
+        description = request.POST['description']
+        instructions = request.POST['instructions']
+        type_ = request.POST['type']
+        user_id_list = request.POST.getlist("user_id[]")
+
+        event = Event(name=name, date_time=date_time, description=description, instructions=instructions, type=type_)
+        event.save()
+        event.users.add(user)
+        for i in user_id_list:
+            event.users.add(User.objects.get(id=int(i)))
+            event.save()
+
+    users = User.objects.exclude(id=user.id).exclude(is_staff=True)
+
+    context = {
+        'notifications_count': len(user.notification_set.all()),
+        'users': users,
+        'list_size': min(len(users), 10) + 3
+    }
+    return render(request, 'med/create_event.html', context)

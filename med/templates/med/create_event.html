@@ -1,0 +1,68 @@
+{% extends "med/base.html" %}
+{% block content %}
+
+<style>
+    div.card-body {
+        margin-top: 20px;
+        background-color: ghostwhite;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    textarea {
+        resize: none;
+    }
+
+    input#date_time {
+        width: 100%;
+        height: 40px;
+    }
+
+</style>
+
+<div class="card-body" id='card1'>
+    <form id="reg" method="post">
+      {% csrf_token %}
+    <div class="mb-3">
+      <label for="name" class="form-label">Название события*</label>
+      <input type="text" name="name" form="reg" class="form-control" id="name" placeholder="Краткое название" required="required">
+    </div>
+    <div class="mb-3">
+      <label for="description" class="form-label">Описание</label>
+      <br>
+      <textarea type="text" name="description" rows="5" cols="40" placeholder=" Более детальное описание события"></textarea>
+    </div>
+    <div class="mb-3">
+        <label for="instructions" class="form-label">Инструкции</label>
+        <br>
+        <textarea type="text" name="instructions" rows="5" cols="40" placeholder=" Необходимые действия перед событием"></textarea>
+    </div>
+    <div class="mb-3">
+        <label for="instructions" class="form-label">Выберите тип события*</label>
+        <select name="type" style="margin-bottom: 20px;" class="form-select" aria-label="Default select example">
+            <option value="Прием пациента">Прием пациента</option>
+            <option value="Сдача анализов">Сдача анализов</option>
+            <option value="Собрание сотрудников">Собрание сотрудников</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label style="margin-bottom: 10px;" for="date_time">Выберите дату и время*</label>
+        <br>
+        <input type="datetime-local" id="date_time" name="date_time">
+    </div>
+    {% if users.count > 0 %}
+    <div class="mb-3">
+        <label for="instructions" class="form-label">Добавьте участников*</label>
+        <select name="user_id[]" required="required" style="margin-bottom: 20px;" class="form-select" aria-label="Default select example" multiple size="{{ list_size }}">
+            <optgroup label="Пациенты">
+                {% for user in users %}
+                <option value="{{ user.id }}">{{user.first_name}} {{user.last_name}}</option>
+                {% endfor %}
+            </optgroup>
+        </select>
+    </div>
+    {% endif %}
+    <input type='submit' form="reg" class="btn btn-primary" style="width:100%" value='Создать'></input>
+
+{% endblock content %}

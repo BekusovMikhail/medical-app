@@ -56,8 +56,20 @@
         <label for="instructions" class="form-label">Добавьте участников*</label>
         <select name="user_id[]" required="required" style="margin-bottom: 20px;" class="form-select" aria-label="Default select example" multiple size="{{ list_size }}">
             <optgroup label="Пациенты">
-                {% for user in users %}
-                <option value="{{ user.id }}">{{user.first_name}} {{user.last_name}}</option>
+                {% for user in users_p %}
+                <option value="{{ user.user.id }}">{{user.user.first_name}} {{user.user.last_name}}</option>
+                {% endfor %}
+            </optgroup>
+
+            <optgroup label="Доктора">
+                {% for user in users_d %}
+                <option value="{{ user.user.id }}">{{user.user.first_name}} {{user.user.last_name}}</option>
+                {% endfor %}
+            </optgroup>
+
+            <optgroup label="Клиники">
+                {% for user in users_c %}
+                <option value="{{ user.user.id }}">{{user.user.first_name}} {{user.user.last_name}}</option>
                 {% endfor %}
             </optgroup>
         </select>

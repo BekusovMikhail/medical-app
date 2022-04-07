@@ -1,4 +1,5 @@
 from pyexpat import model
+from tabnanny import verbose
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -25,6 +26,9 @@ class Doctor(models.Model):
         User,
         on_delete=models.CASCADE,
         primary_key = True)
+    
+    class Meta:
+        verbose_name = 'Доктор'
 
 
 class Chat(models.Model):

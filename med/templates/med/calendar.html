@@ -1,0 +1,35 @@
+{% extends "med/base.html" %}
+{% block content %}
+<h1 style='align-self: center; margin-top: 1rem;'>{{ m_name }} {{ year }}</h1>
+<div class="calendar" style='box-sizing:border-box; min-height: 0; flex-grow: 1; width: 80%; align-self: center;'>
+    <div><div class="weekday">Понедельник</div></div>
+    <div><div class="weekday">Вторник</div></div>
+    <div><div class="weekday">Среда</div></div>
+    <div><div class="weekday">Четверг</div></div>
+    <div><div class="weekday">Пятница</div></div>
+    <div><div class="weekday">Суббота</div></div>
+    <div><div class="weekday">Воскресенье</div></div>
+    {% for day in days %}
+    {% if day.0 != 0 %}
+        <div><div class="date">{{ day.0 }}</div><div class="events">{{ day.2 }} событий</div></div>
+    {% else %}
+        <div><div class="date"></div><div class="events"></div></div>
+    {% endif %}
+    {% endfor %}
+</div>
+<nav aria-label="Page navigation example" style="margin-top: auto; align-self: center;">
+  <ul class="pagination">
+    <li class="page-item">
+      <a class="page-link" href="/calendar?y={{ prev.0 }}&m={{ prev.1 }}" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    <li class="page-item"><a class="page-link" href="/calendar">Текущий месяц</a></li>
+    <li class="page-item">
+      <a class="page-link" href="/calendar?y={{ next.0 }}&m={{ next.1 }}" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+{% endblock content %}

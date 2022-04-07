@@ -33,7 +33,21 @@ def reg(request):
 def dash(request):
     user = request.user
     notifications_count = len(user.notification_set.all())
-    return render(request, 'med/dashboard.html', context={'name': user.first_name, 'surname': user.last_name, 'notifications_count': notifications_count})
+    try:
+        Doctor.objects.get(pk=user.id)
+        role = 'Доктор'
+    except:
+        try:
+            Clinic.objects.get(pk=user.id)
+            role = 'Клиника'
+        except:
+            try:
+                Patient.objects.get(pk=user.id)
+                role = 'Пациент'
+            except:
+                role = "Не определен"
+
+    return render(request, 'med/dashboard.html', context={'role': role, 'name': user.first_name, 'surname': user.last_name, 'notifications_count': notifications_count})
 
 
 def logout_view(request):
@@ -77,3 +91,36 @@ def notifications(request):
     return render(request, 'med/notifications.html', context={'notifications': notifications, 'notifications_count': len(notifications)})
 
 
+@login_required
+def create_event(request):
+    user = request.user
+
+    if request.method == "POST":
+        name = request.POST['name']
+        date_time = request.POST['date_time']
+        description = request.POST['description']
+        instructions = request.POST['instructions']
+        type_ = request.POST['type']
+        user_id_list = request.POST.getlist("user_id[]")
+
+        event = Event(name=name, date_time=date_time, description=description, instructions=instructions, type=type_)
+        event.save()
+        event.users.add(user)
+        for i in user_id_list:
+            event.users.add(User.objects.get(id=int(i)))
+            event.save()
+
+    users = User.objects.exclude(id=user.id).exclude(is_staff=True)
+    users_p = Patient.objects.exclude(user_id=user.id)
+    users_d = Doctor.objects.exclude(user_id=user.id)
+    users_c = Clinic.objects.exclude(user_id=user.id)
+
+    context = {
+        'notifications_count': len(user.notification_set.all()),
+        'users': users,
+        'list_size': min(len(users), 10) + 3,
+        'users_p': users_p,
+        'users_d': users_d,
+        'users_c': users_c,
+    }
+    return render(request, 'med/create_event.html', context)

@@ -10,4 +10,5 @@ urlpatterns = [
     path('chats', views.chats, name='chats'),
     path('chat', views.chat, name='chat'),
     path('notifications', views.notifications, name='notifications'),
+    path('create_event', views.create_event, name='create_event')
 ]

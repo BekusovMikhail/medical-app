@@ -28,13 +28,14 @@ class socketServer:
 
     def new_message(self, client, server, message):
         print('dasdasdasdas')
-        self.clients.append({'user_id': int(message), 'client': client})
+        data = message.split('&')
+        self.clients.append({'chat_id': int(data[0]), 'user_id': int(data[1]), 'client': client})
         print('new user:', message)
 
 
-    def send_message(self, user_id, message):
+    def send_message(self, chat_id, user_id, message):
         for user in self.clients:
-            if user['user_id'] == user_id:
+            if user['chat_id'] == chat_id and user['user_id'] == user_id:
                 self.server.send_message(user['client'], message)
                 break
 

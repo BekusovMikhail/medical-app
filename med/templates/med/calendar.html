@@ -39,14 +39,17 @@
     
     if (response.ok) {
       let data = await response.json();
-      card_header.insertAdjacentHTML('afterbegin', `<h5 style="margin: 0;">События ${day} ${month} ${year} года</h5>`)
+      card_header.insertAdjacentHTML('afterbegin', `<h5 style="margin: 0;">События ${day} {{ m_name }} ${year} года</h5>`)
+
+
       if (data.length == 0) {
         card_body.insertAdjacentHTML('afterbegin', `<h5 class="card-title">Сегодня событий нет</h5>`)
       } else {
         for (let event of data) {
-          card_body.insertAdjacentHTML('beforeend', `<h5 class="card-title">${event['type']}</h5>`)
+          // card_body.insertAdjacentHTML('beforeend', `<p class="card-text">${event['date_time']}</p>`)
+          card_body.insertAdjacentHTML('beforeend', `<h5 class="card-title">${event['type']} <sup>${event['date_time'].slice(11, 16)}</sup></h5>`)
           card_body.insertAdjacentHTML('beforeend', `<p class="card-text">${event['name']}</p>`)
-          card_body.insertAdjacentHTML('beforeend', `<p class="card-text">${event['date_time']}</p>`)
+          // card_body.insertAdjacentHTML('beforeend', `<p class="card-text">${event['date_time']}</p>`)
           card_body.insertAdjacentHTML('beforeend', `<p class="card-text">${event['description']}</p>`)
           card_body.insertAdjacentHTML('beforeend', `<p class="card-text">${event['instructions']}</p>`)
         }

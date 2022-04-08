@@ -10,6 +10,8 @@ import random
 import smtplib, ssl
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+import datetime
+
 
 server = socketServer()
 port = 465  # For SSL
@@ -117,3 +119,18 @@ def deleteNotification(request):
             return HttpResponse(status=201)
         else:
             return HttpResponseForbidden("Forbidden")
+    else:
+        return HttpResponseForbidden("Forbidden")
+
+
+@login_required
+@csrf_exempt
+def getEvents(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        resp = list(request.user.event_set.filter(date_time__date=datetime.date(int(data['year']), int(data['month']), int(data['day']))).values())
+        for i in resp:
+            i['date_time'] = str(i['date_time'])
+        return HttpResponse(json.dumps(resp), content_type="application/json")
+    else:
+        return HttpResponseForbidden("Forbidden")

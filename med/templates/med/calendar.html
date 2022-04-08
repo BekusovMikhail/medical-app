@@ -1,22 +1,70 @@
 {% extends "med/base.html" %}
 {% block content %}
 <h1 style='align-self: center; margin-top: 1rem;'>{{ m_name }} {{ year }}</h1>
-<div class="calendar" style='box-sizing:border-box; min-height: 0; flex-grow: 1; width: 80%; align-self: center;'>
-    <div><div class="weekday">Понедельник</div></div>
-    <div><div class="weekday">Вторник</div></div>
-    <div><div class="weekday">Среда</div></div>
-    <div><div class="weekday">Четверг</div></div>
-    <div><div class="weekday">Пятница</div></div>
-    <div><div class="weekday">Суббота</div></div>
-    <div><div class="weekday">Воскресенье</div></div>
+<div id='calendar' class="calendar" data-month="{{ month }}" data-year="{{ year }}" style='box-sizing:border-box; min-height: 0; flex-grow: 1; width: 80%; align-self: center;'>
+    <div style="background-color: #87CEFA;"><div class="weekday">Понедельник</div></div>
+    <div style="background-color: #87CEFA;"><div class="weekday">Вторник</div></div>
+    <div style="background-color: #87CEFA;"><div class="weekday">Среда</div></div>
+    <div style="background-color: #87CEFA;"><div class="weekday">Четверг</div></div>
+    <div style="background-color: #87CEFA;"><div class="weekday">Пятница</div></div>
+    <div style="background-color: #87CEFA;"><div class="weekday">Суббота</div></div>
+    <div style="background-color: #87CEFA;"><div class="weekday">Воскресенье</div></div>
     {% for day in days %}
     {% if day.0 != 0 %}
-        <div><div class="date">{{ day.0 }}</div><div class="events">{{ day.2 }} событий</div></div>
+        <div class="monthday" data-day="{{ day.0 }}"><div class="date">{{ day.0 }}</div><div class="events">{{ day.2 }} событий</div></div>
     {% else %}
         <div><div class="date"></div><div class="events"></div></div>
     {% endif %}
     {% endfor %}
 </div>
+<script type="text/javascript">
+  async function dayClicked(event){
+    let day;
+
+    if (event.target.className == "monthday") {
+      day = event.target.getAttribute('data-day')
+    } else {
+      day = event.target.parentElement.getAttribute('data-day')
+    }
+
+    let month = calendar.getAttribute('data-month')
+    let year = calendar.getAttribute('data-year')
+    let response = await fetch('/api/getevents', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({'day': day, 'month': month, 'year': year})
+          });
+    
+    if (response.ok) {
+      let data = await response.json();
+      card_header.insertAdjacentHTML('afterbegin', `<h5 style="margin: 0;">События ${day} ${month} ${year} года</h5>`)
+      if (data.length == 0) {
+        card_body.insertAdjacentHTML('afterbegin', `<h5 class="card-title">Сегодня событий нет</h5>`)
+      } else {
+        for (let event of data) {
+          card_body.insertAdjacentHTML('beforeend', `<h5 class="card-title">${event['type']}</h5>`)
+          card_body.insertAdjacentHTML('beforeend', `<p class="card-text">${event['name']}</p>`)
+          card_body.insertAdjacentHTML('beforeend', `<p class="card-text">${event['date_time']}</p>`)
+          card_body.insertAdjacentHTML('beforeend', `<p class="card-text">${event['description']}</p>`)
+          card_body.insertAdjacentHTML('beforeend', `<p class="card-text">${event['instructions']}</p>`)
+        }
+      }
+      modalViewCalendar.style.display = "block";
+      modalViewContent.style.display = "block";
+    }
+  }
+
+  function closeClicked(event){
+    modalViewCalendar.style.display = "none";
+    modalViewContent.style.display = "none";
+    let elements = document.querySelectorAll('#card_header > h5, #card_body > *');
+    for (let elem of elements){
+      elem.remove()
+    }
+  }
+</script>
 <nav aria-label="Page navigation example" style="margin-top: auto; align-self: center;">
   <ul class="pagination">
     <li class="page-item">
@@ -32,4 +80,20 @@
     </li>
   </ul>
 </nav>
+<div class="modalViewCalendar" style="display: None;" id="modalViewCalendar">
+</div>
+<div class="card" style="display: None; overflow-y:hidden;" id='modalViewContent'>
+  <div class="card-header" id="card_header" style="display: flex; flex-direction: row; align-items: center;">
+    <button type="button" id='closeButton' style='margin-left: auto;' class="btn-close" aria-label="Close"></button>
+  </div>
+  <div class="card-body" id="card_body" style="overflow-y: auto; height: 94%">
+  </div>
+</div>
+<script type="text/javascript">
+  closeButton.onclick = closeClicked
+  let elements = document.querySelectorAll('.monthday');
+    for (let elem of elements){
+      elem.onclick = dayClicked
+    }
+</script>
 {% endblock content %}

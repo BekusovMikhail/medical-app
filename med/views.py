@@ -113,7 +113,7 @@ def calendar(request):
     days = list(map(list, days))
 
     for i in range(len(dates)):
-        days[i].append(user.event_set.filter(date_time__exact=datetime.datetime.combine(dates[i], datetime.datetime.min.time())).count())
+        days[i].append(user.event_set.filter(date_time__date=dates[i]).count())
 
     if m + 1 == 13:
         y_next = y + 1
@@ -131,7 +131,7 @@ def calendar(request):
 
     m_names = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']
 
-    return render(request, 'med/calendar.html', context={'days': days, 'next': [y_next, m_next], 'prev': [y_prev, m_prev], 'm_name': m_names[m-1], 'year': y, 'notifications_count': len(user.notification_set.all())})
+    return render(request, 'med/calendar.html', context={'days': days, 'next': [y_next, m_next], 'prev': [y_prev, m_prev], 'm_name': m_names[m-1], 'year': y, 'month': m, 'notifications_count': len(user.notification_set.all())})
 
 
 def create_event(request):

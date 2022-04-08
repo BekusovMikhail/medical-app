@@ -8,4 +8,5 @@ urlpatterns = [
     path('sendcode', views.sendVerificationCode, name='sendcode'),
     path('registeruser', views.registerUser, name='registeruser'),
     path('deletenotification', views.deleteNotification, name='deletenotification'),
+    path('getevents', views.getEvents, name='getevents'),
 ]

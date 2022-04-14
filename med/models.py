@@ -60,5 +60,5 @@ class Notification(models.Model):
     text = models.TextField()
     creationDate = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete = models.CASCADE)
-    event = models.ForeignKey(Event, on_delete=models.CASCADE, default=None)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, default=None, null=True)
 

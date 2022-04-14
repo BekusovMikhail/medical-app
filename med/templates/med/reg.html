@@ -54,22 +54,41 @@
         <p class="main-radio-role">
             <div class="radio-role form-check-inline">
                 <input type="radio" id="contactChoice1"
-                name="role" value="patient" checked>
+                name="role" value="patient" onclick="checkRoleAddSpec(this);" checked>
                 <label for="contactChoice1">Patient</label>
             </div>
         
             <div class="radio-role form-check-inline">
                 <input type="radio" id="contactChoice2"
-                name="role" value="doctor">
+                name="role" value="doctor" onclick="checkRoleAddSpec(this);">
                 <label for="contactChoice2">Doctor</label>
             </div>
         
             <div class="radio-role form-check-inline">
                 <input type="radio" id="contactChoice3"
-                name="role" value="clinic">
+                name="role" value="clinic" onclick="checkRoleAddSpec(this);">
                 <label for="contactChoice3">Clinic</label>
             </div>
         </p>
+    </div>
+    <script type="text/javascript">
+      function checkRoleAddSpec(radioRole) {
+        const radioValue = radioRole.value;
+        if (radioValue == "doctor"){
+          let d = document.querySelector('#specializ');
+          document.querySelector('#specialization_id').required = true
+          d.hidden = false
+        }
+        else {
+          let d = document.querySelector('#specializ');
+          document.querySelector('#specialization_id').required = false
+          d.hidden = true
+        }
+      }
+    </script>
+    <div id="specializ" class="mb-3" hidden>
+      <label for="specialization" class="form-label">Specialization</label>
+      <input type="text" name="specialization" form="reg" class="form-control" id="specialization_id" required="required"></textarea>
     </div>
     <div class="mb-3">
       <label for="password" class="form-label">Password</label>

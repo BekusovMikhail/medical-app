@@ -97,7 +97,9 @@ def registerUser(request):
         if role == 'patient':
             reg_user = Patient(phone=request.POST['phone'], user=user)
         elif role == 'doctor':
-            reg_user = Doctor(phone=request.POST['phone'], user=user)
+            specialization = request.POST['specialization']
+            print(specialization)
+            reg_user = Doctor(phone=request.POST['phone'], specialization=specialization, user=user)
         elif role == 'clinic':
             reg_user = Clinic(phone=request.POST['phone'], user=user)
         reg_user.save()

@@ -22,6 +22,7 @@ class Clinic(models.Model):
 
 class Doctor(models.Model):
     phone = models.CharField(max_length=20)
+    specialization = models.CharField(max_length=20, default="")
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,

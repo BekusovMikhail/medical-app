@@ -56,7 +56,7 @@ class Event(models.Model):
 
 class Notification(models.Model):
     name = models.CharField(max_length=20)
-    sender = models.ForeignKey(User, on_delete = models.CASCADE, related_name='sender')
+    sender = models.ForeignKey(User, on_delete = models.CASCADE, related_name='sender', null=True, default=None)
     text = models.TextField()
     creationDate = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete = models.CASCADE)

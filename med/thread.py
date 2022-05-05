@@ -24,5 +24,6 @@ def run_continuously(interval=10):
                 time.sleep(interval)
 
     continuous_thread = CreateNotificationsThread()
+    continuous_thread.setDaemon(True)
     continuous_thread.start()
     return

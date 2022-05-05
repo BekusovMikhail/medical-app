@@ -11,9 +11,8 @@ def index(request):
     if request.method == "POST":
         email = request.POST['email']
         password = request.POST['password']
-        user = authenticate(request, username=email, password=password)
+        user = authenticate(request, email=email, password=password)
         if user is not None:
-            print('dasdas')
             login(request, user)
             return HttpResponseRedirect("dashboard")
         else:
@@ -35,19 +34,14 @@ def reg(request):
 def dash(request):
     user = request.user
     notifications_count = len(user.notification_set.all())
-    try:
-        Doctor.objects.get(pk=user.id)
+    if user.is_patient:
+        role = 'Пациент'
+    elif user.is_doctor:
         role = 'Доктор'
-    except:
-        try:
-            Clinic.objects.get(pk=user.id)
-            role = 'Клиника'
-        except:
-            try:
-                Patient.objects.get(pk=user.id)
-                role = 'Пациент'
-            except:
-                role = "Не определен"
+    elif user.is_clinic:
+        role = 'Клиника'
+    else:
+        role = "Не определен"
 
     return render(request, 'med/dashboard.html', context={'role': role, 'name': user.first_name, 'surname': user.last_name, 'notifications_count': notifications_count})
 

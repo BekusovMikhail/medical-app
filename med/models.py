@@ -1,11 +1,22 @@
 from pyexpat import model
 from tabnanny import verbose
 from django.db import models
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
+
+
+class User(AbstractUser):
+    is_patient = models.BooleanField(default=False)
+    is_clinic = models.BooleanField(default=False)
+    is_doctor = models.BooleanField(default=False)
+    email = models.EmailField(unique=True)
+    USERNAME_FIELD = 'email'
+    phone = models.CharField(max_length=20)
+    REQUIRED_FIELDS = []
+
 
 
 class Patient(models.Model):
-    phone = models.CharField(max_length=20)
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
@@ -13,7 +24,6 @@ class Patient(models.Model):
 
 
 class Clinic(models.Model):
-    phone = models.CharField(max_length=20)
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
@@ -21,7 +31,6 @@ class Clinic(models.Model):
 
 
 class Doctor(models.Model):
-    phone = models.CharField(max_length=20)
     specialization = models.CharField(max_length=20, default="")
     user = models.OneToOneField(
         User,

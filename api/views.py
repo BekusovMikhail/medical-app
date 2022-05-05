@@ -90,18 +90,22 @@ def registerUser(request):
         user.first_name = request.POST['name']
         user.last_name = request.POST['surname']
         user.email = request.POST['email']
-        user.username = request.POST['email']
+        user.phone = request.POST['phone']
+        # user.username = request.POST['email']
         role = request.POST['role']
         user.set_password(request.POST['password'])
         user.save()
         if role == 'patient':
-            reg_user = Patient(phone=request.POST['phone'], user=user)
+            user.is_patient = True
+            reg_user = Patient(user=user)
         elif role == 'doctor':
+            user.is_doctor = True
             specialization = request.POST['specialization']
-            print(specialization)
-            reg_user = Doctor(phone=request.POST['phone'], specialization=specialization, user=user)
+            reg_user = Doctor(specialization=specialization, user=user)
         elif role == 'clinic':
-            reg_user = Clinic(phone=request.POST['phone'], user=user)
+            user.is_clinic = True
+            reg_user = Clinic(user=user)
+        user.save()
         reg_user.save()
         login(request, user)
         return HttpResponse(status=201)

@@ -3,6 +3,7 @@ from tabnanny import verbose
 from django.db import models
 # from django.contrib.auth.models import User
 from django.contrib.auth.models import AbstractUser
+from django.contrib.postgres.fields import ArrayField
 
 
 class User(AbstractUser):
@@ -13,6 +14,7 @@ class User(AbstractUser):
     USERNAME_FIELD = 'email'
     phone = models.CharField(max_length=20)
     REQUIRED_FIELDS = []
+    patronymic = models.CharField(max_length=25, null=True, blank=True)
 
 
 
@@ -39,6 +41,17 @@ class Doctor(models.Model):
     
     class Meta:
         verbose_name = 'Доктор'
+
+class Schedule(models.Model):
+    doctor = models.OneToOneField(Doctor, on_delete = models.CASCADE)
+    monday = ArrayField(models.TimeField(auto_now=False, auto_now_add=False), size=2, null=True)
+    tuesday = ArrayField(models.TimeField(auto_now=False, auto_now_add=False), size=2, null=True)
+    wednesday = ArrayField(models.TimeField(auto_now=False, auto_now_add=False), size=2, null=True)
+    thursday = ArrayField(models.TimeField(auto_now=False, auto_now_add=False), size=2, null=True)
+    friday = ArrayField(models.TimeField(auto_now=False, auto_now_add=False), size=2, null=True)
+    saturday = ArrayField(models.TimeField(auto_now=False, auto_now_add=False), size=2, null=True)
+    sunday = ArrayField(models.TimeField(auto_now=False, auto_now_add=False), size=2, null=True)
+
 
 
 class Chat(models.Model):

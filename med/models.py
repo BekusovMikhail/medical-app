@@ -26,6 +26,8 @@ class Patient(models.Model):
 
 
 class Clinic(models.Model):
+    specialization = models.CharField(max_length=60, default="")
+    address = models.CharField(max_length=50, default="")
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,

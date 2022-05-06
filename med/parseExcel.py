@@ -1,14 +1,19 @@
-from models import *
-import pandas
-from datetime import time
-from django.conf import settings
-
-
+# from django.conf import settings
+# settings.configure()
 import os
 import django
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
-django.setup()
-settings.configure()
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "med.settings")
+# django.setup()
+
+
+
+# from models import *
+import pandas
+from datetime import time
+
+
+
+
 
 def returnTimes(medics=None, dayOnRussian=None):
     if dayOnRussian and medics:
@@ -50,5 +55,19 @@ def parseScheduleAndDoctors (path=None):
         schedule.doctor = medic
 
         medic.schedule = schedule
+        medic.save()
+        schedule.save()
 
-parseScheduleAndDoctors("med\excel_files\Vrachi.xlsx")
+
+def parseClinics(path=None):
+    clinics = pandas.read_excel(path)
+    print(clinics)
+    for i in range(clinics):
+        clinic = Clinic()
+        clinic.user.name = clinics.iloc[i]['Название клиники']
+        clinic.specialization = clinics.iloc[i]['Специализация']
+        clinic.address = clinics.iloc[i]['Адрес']
+        clinic.save()
+
+# parseScheduleAndDoctors("med\excel_files\Vrachi.xlsx")
+# parseClinics("med\excel_files\Kliniki.xlsx")

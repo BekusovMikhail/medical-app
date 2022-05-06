@@ -160,4 +160,3 @@ def create_event(request):
         'users_c': users_c,
     }
     return render(request, 'med/create_event.html', context)
-

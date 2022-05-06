@@ -6,14 +6,15 @@ from django.contrib.auth.models import AbstractUser
 
 
 class User(AbstractUser):
+    username = None
     is_patient = models.BooleanField(default=False)
     is_clinic = models.BooleanField(default=False)
     is_doctor = models.BooleanField(default=False)
     email = models.EmailField(unique=True)
+    avatar = models.ImageField(upload_to='avatars/', default='avatars/default_avatar.jpg')
     USERNAME_FIELD = 'email'
     phone = models.CharField(max_length=20)
     REQUIRED_FIELDS = []
-
 
 
 class Patient(models.Model):

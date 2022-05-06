@@ -51,8 +51,7 @@ class Command(BaseCommand):
             us.email = medics.iloc[i]['Email'].strip()
             us.phone = medics.iloc[i]['Номер телефона'].strip()
             us.is_doctor = True
-            us.username = us.email
-            us.password = "".join([chr(random.randint(65, 65+25) + int(random.choice([0, 32]))) for _ in range(12)])
+            us.set_password("".join([chr(random.randint(65, 65+25) + int(random.choice([0, 32]))) for _ in range(12)]))
             us.save()
             medic.user = us
 
@@ -81,9 +80,9 @@ class Command(BaseCommand):
             us.name = clinics.iloc[i]['Название клиники']
             us.is_clinic = True
 
-            us.email = clinics.iloc[i]['Email'].strip()
-            us.phone = clinics.iloc[i]['Номер телефона'].strip()
-            us.username = us.email
+            # !!! us.email = clinics.iloc[i]['Email'].strip()
+            # !!! us.phone = clinics.iloc[i]['Номер телефона'].strip()
+            # !!! us.set_password("".join([chr(random.randint(65, 65+25) + int(random.choice([0, 32]))) for _ in range(12)]))
 
             us.save()
             clinic.user = us

@@ -87,3 +87,9 @@ class Notification(models.Model):
     user = models.ForeignKey(User, on_delete = models.CASCADE)
     event = models.ForeignKey(Event, on_delete=models.CASCADE, default=None, null=True)
 
+class Procedure(models.Model):
+    name = models.CharField(max_length=40)
+    description = models.TextField(default="")
+    steps = models.TextField(default="")
+    doctor = models.CharField(max_length=50, default="") # doctors specialization
+

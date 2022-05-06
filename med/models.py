@@ -26,8 +26,8 @@ class Patient(models.Model):
 
 
 class Clinic(models.Model):
-    specialization = models.CharField(max_length=60, default="")
-    address = models.CharField(max_length=50, default="")
+    specialization = models.CharField(max_length=200, default="")
+    address = models.CharField(max_length=75, default="")
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
@@ -35,7 +35,7 @@ class Clinic(models.Model):
 
 
 class Doctor(models.Model):
-    specialization = models.CharField(max_length=20, default="")
+    specialization = models.CharField(max_length=50, default="")
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,

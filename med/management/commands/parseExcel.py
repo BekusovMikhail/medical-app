@@ -92,9 +92,11 @@ class Command(BaseCommand):
 
     def parseProcedures(self, path=None):
         procedures = pandas.read_excel(path)
+        print(procedures)
         return None
 
     def handle(self, *args, **options):
-        self.parseScheduleAndDoctors("med\excel_files\Vrachi.xlsx")
+        # self.parseScheduleAndDoctors("med\excel_files\Vrachi.xlsx")
         # self.parseClinics("med\excel_files\Kliniki.xlsx")
+        self.parseProcedures(r"med\excel_files\Protsedury.xlsx")
 

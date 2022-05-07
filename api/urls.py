@@ -9,4 +9,5 @@ urlpatterns = [
     path('registeruser', views.registerUser, name='registeruser'),
     path('deletenotification', views.deleteNotification, name='deletenotification'),
     path('getevents', views.getEvents, name='getevents'),
+    path('changesettings', views.changeSettings, name='changesettings'),
 ]

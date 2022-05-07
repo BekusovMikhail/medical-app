@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from med.models import *
 from .chatSockets import socketServer
+import os
 import json
 import random
 import smtplib, ssl
@@ -138,5 +139,43 @@ def getEvents(request):
         for i in resp:
             i['date_time'] = str(i['date_time'])
         return HttpResponse(json.dumps(resp), content_type="application/json")
+    else:
+        return HttpResponseForbidden("Forbidden")
+
+
+@login_required
+@csrf_exempt
+def changeSettings(request):
+    if request.method == "POST":
+        user = request.user
+        user.first_name = request.POST['first_name']
+        user.last_name = request.POST['last_name']
+        user.patronymic = request.POST['patronymic']
+        user.phone = request.POST['phone']
+        if request.FILES['avatar']:
+            files = os.listdir(r"./med/media/avatars")
+            for file in files:
+                if file.startswith("{}avatar".format(user.id)):
+                    os.remove(os.path.join(r"./med/media/avatars", file))
+                    break
+            pic = request.FILES['avatar']
+            dot = pic.name.rfind('.')
+            pic.name = "{}avatar".format(user.id) + pic.name[dot:]
+            user.avatar = pic
+        if user.is_patient:
+            pass
+        elif user.is_clinic:
+            user.clinic.specialization = request.POST['specialization']
+            user.clinic.address = request.POST['address']
+            user.clinic.description = request.POST['description']
+            user.clinic.save()
+        elif user.is_doctor:
+            user.doctor.address = request.POST['address']
+            user.doctor.description = request.POST['description']
+            user.doctor.save()
+
+        user.save()
+        return HttpResponse(status=200)
+
     else:
         return HttpResponseForbidden("Forbidden")

@@ -7,6 +7,7 @@ from django.contrib.postgres.fields import ArrayField
 
 
 class User(AbstractUser):
+    # first_name, last_name
     username = None
     is_patient = models.BooleanField(default=False)
     is_clinic = models.BooleanField(default=False)
@@ -23,10 +24,11 @@ class Patient(models.Model):
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
-        primary_key = True)
+        primary_key=True)
 
 
 class Clinic(models.Model):
+    description = models.TextField(blank=True)
     specialization = models.CharField(max_length=60, default="")
     address = models.CharField(max_length=50, default="")
     user = models.OneToOneField(
@@ -36,6 +38,7 @@ class Clinic(models.Model):
 
 
 class Doctor(models.Model):
+    description = models.TextField(blank=True)
     specialization = models.CharField(max_length=20, default="")
     user = models.OneToOneField(
         User,

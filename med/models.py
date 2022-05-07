@@ -29,8 +29,8 @@ class Patient(models.Model):
 
 class Clinic(models.Model):
     description = models.TextField(blank=True)
-    specialization = models.CharField(max_length=60, default="")
-    address = models.CharField(max_length=50, default="")
+    specialization = models.CharField(max_length=200, default="")
+    address = models.CharField(max_length=75, default="")
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
@@ -39,7 +39,7 @@ class Clinic(models.Model):
 
 class Doctor(models.Model):
     description = models.TextField(blank=True)
-    specialization = models.CharField(max_length=20, default="")
+    specialization = models.CharField(max_length=50, default="")
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
@@ -89,4 +89,10 @@ class Notification(models.Model):
     creationDate = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete = models.CASCADE)
     event = models.ForeignKey(Event, on_delete=models.CASCADE, default=None, null=True)
+
+class Procedure(models.Model):
+    name = models.CharField(max_length=40)
+    description = models.TextField(default=None, null=True)
+    steps = models.TextField(default=None, null=True)
+    doctor_spec = models.CharField(max_length=50, default="") # doctors specialization
 

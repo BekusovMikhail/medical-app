@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
+from regex import E
 from .models import *
 import datetime
 import calendar as calendar_lib
@@ -160,3 +161,46 @@ def create_event(request):
         'users_c': users_c,
     }
     return render(request, 'med/create_event.html', context)
+
+@login_required
+def account(request):
+    usr = request.user
+    if usr.is_doctor:
+        usr = usr.doctor
+    elif usr.is_clinic:
+        usr = usr.clinic
+    else:
+        usr = usr.patient
+
+    error = None
+    if request.method == "POST":
+        img = request.FILES.get('img', None)
+        snp = request.POST['fullname']
+        descr = request.POST.get('description', 'Нет дополнительной информации')
+        new_phone = request.POST['newphone']
+        new_email = request.POST['newemail']
+
+        usr.ava = img
+
+        newname = snp.split()
+        usr.user.first_name = newname[1]
+        usr.user.last_name = newname[0]
+        usr.user.patronymic = newname[2]
+
+        usr.extra = descr
+        usr.user.phone = new_phone
+
+        try:
+            usr.user.email = new_email
+            usr.save()
+        except:
+            error = 'Пользователь с такой почтой уже существует'
+
+    fullname = " ".join([usr.user.last_name, usr.user.first_name, usr.user.patronymic])
+    
+    context = {
+        'usr': usr,
+        'fullname': fullname,
+        'error': error if error else None,
+    }
+    return render(request, 'med/account.html', context)

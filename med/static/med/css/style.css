@@ -70,3 +70,7 @@
   z-index: 3;
   overflow: auto;
 }
+
+.bi {
+    margin-right: 8px;
+}

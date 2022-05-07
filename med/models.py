@@ -12,7 +12,6 @@ class User(AbstractUser):
     is_clinic = models.BooleanField(default=False)
     is_doctor = models.BooleanField(default=False)
     email = models.EmailField(unique=True)
-    avatar = models.ImageField(upload_to='avatars/', default='avatars/default_avatar.jpg')
     USERNAME_FIELD = 'email'
     phone = models.CharField(max_length=20)
     REQUIRED_FIELDS = []
@@ -20,6 +19,9 @@ class User(AbstractUser):
 
 
 class Patient(models.Model):
+    ava = models.ImageField(upload_to='uploads', blank=True, null=True)
+    specialization = models.CharField(max_length=200, default="Пациент")
+    extra = models.CharField(max_length=1000, default='')
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
@@ -27,8 +29,10 @@ class Patient(models.Model):
 
 
 class Clinic(models.Model):
+    ava = models.ImageField(upload_to='uploads', blank=True, null=True)
     specialization = models.CharField(max_length=200, default="")
     address = models.CharField(max_length=75, default="")
+    extra = models.CharField(max_length=1000, default='Нет дополнительной информации')
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
@@ -36,7 +40,9 @@ class Clinic(models.Model):
 
 
 class Doctor(models.Model):
+    ava = models.ImageField(upload_to='uploads', blank=True, null=True)
     specialization = models.CharField(max_length=50, default="")
+    extra = models.CharField(max_length=1000, default='Нет дополнительной информации')
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,

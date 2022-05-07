@@ -51,7 +51,8 @@ class Command(BaseCommand):
             us.email = medics.iloc[i]['Email'].strip()
             us.phone = medics.iloc[i]['Номер телефона'].strip()
             us.is_doctor = True
-            us.set_password("".join([chr(random.randint(65, 65+25) + int(random.choice([0, 32]))) for _ in range(12)]))
+            #us.set_password("".join([chr(random.randint(65, 65+25) + int(random.choice([0, 32]))) for _ in range(12)]))
+            us.set_password("123")
             us.save()
             medic.user = us
 
@@ -96,7 +97,7 @@ class Command(BaseCommand):
         return None
 
     def handle(self, *args, **options):
-        # self.parseScheduleAndDoctors("med\excel_files\Vrachi.xlsx")
-        # self.parseClinics("med\excel_files\Kliniki.xlsx")
+        self.parseScheduleAndDoctors("med\excel_files\Vrachi.xlsx")
+        #self.parseClinics("med\excel_files\Kliniki.xlsx")
         self.parseProcedures(r"med\excel_files\Protsedury.xlsx")
 

@@ -89,6 +89,7 @@ def registerUser(request):
         user = User()
         user.first_name = request.POST['name']
         user.last_name = request.POST['surname']
+        user.patronymic = request.POST['patronymic']
         user.email = request.POST['email']
         user.phone = request.POST['phone']
         # user.username = request.POST['email']

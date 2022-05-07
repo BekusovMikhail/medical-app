@@ -12,4 +12,5 @@ urlpatterns = [
     path('notifications', views.notifications, name='notifications'),
     path('calendar', views.calendar, name='calendar'),
     path('create_event', views.create_event, name='create_event'),
+    path('account', views.account, name='account')
 ]

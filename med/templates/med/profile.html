@@ -1,0 +1,25 @@
+{% extends "med/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'med/css/profile.css' %}">
+{#<script src="{% static 'med/js/profile.js' %}"></script>#}
+ <div class="content">
+  <div class="info">
+   {% for item in info %}
+    <div>
+      <h4>{{ item.title }}</h4>
+      <p>{{ item.text|linebreaks }}</p>
+    </div>
+   {% endfor %}
+  </div>
+   <div class="sep"></div>
+   <div class="name">
+     <img src="{{ avatar }}" class="img-fluid" alt="Image">
+     <h1 class="display-3">{{ name }}</h1>
+   </div>
+ </div>
+
+
+{% endblock content %}

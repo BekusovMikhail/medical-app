@@ -152,7 +152,7 @@ def changeSettings(request):
         user.last_name = request.POST['last_name']
         user.patronymic = request.POST['patronymic']
         user.phone = request.POST['phone']
-        if request.FILES['avatar']:
+        if 'avatar' in request.FILES:
             files = os.listdir(r"./med/media/avatars")
             for file in files:
                 if file.startswith("{}avatar".format(user.id)):
@@ -170,7 +170,7 @@ def changeSettings(request):
             user.clinic.description = request.POST['description']
             user.clinic.save()
         elif user.is_doctor:
-            user.doctor.address = request.POST['address']
+            user.doctor.specialization = request.POST['specialization']
             user.doctor.description = request.POST['description']
             user.doctor.save()
 

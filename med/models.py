@@ -91,5 +91,5 @@ class Procedure(models.Model):
     name = models.CharField(max_length=40)
     description = models.TextField(default=None, null=True)
     steps = models.TextField(default=None, null=True)
-    doctor = models.CharField(max_length=50, default="") # doctors specialization
+    doctor_spec = models.CharField(max_length=50, default="") # doctors specialization
 

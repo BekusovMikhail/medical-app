@@ -1,5 +1,8 @@
 {% extends "med/base.html" %}
 {% block content %}
- <h1 style='margin-top: 5rem'>Hello, {{name}} {{ surname }} </h1>
- <h2 style='margin-top: 5rem'>{{role}}</h2>
+    <div class="content" style="display:flex; flex-direction: column; align-items: center; gap: 2rem; margin-top: 5rem">
+        <img src="{{ request.user.avatar.url }}" alt="Аватар" style="width:15rem; height:15rem; border-radius: 50%;">
+        <h1>Hello, {{name}} {{ surname }} </h1>
+        <h2>{{role}}</h2>
+    </div>
 {% endblock content %}

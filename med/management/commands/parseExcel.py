@@ -91,9 +91,17 @@ class Command(BaseCommand):
             clinic.address = clinics.iloc[i]['Адрес']
             clinic.save()
 
-    def parseProcedures(self, path=None):
+    def parseProcedures(path=None):
         procedures = pandas.read_excel(path)
+        procedures = procedures[["Название процедуры", "Описание", "Пункты для выполнения перед процедурой", "Ответственный за процедуру врач"]]
         print(procedures)
+        for i in range(len(procedures)):
+            procedure = Procedure()
+            procedure.name = procedures.iloc[i]['Название процедуры']
+            procedure.description = procedures.iloc[i]['Описание']
+            procedure.steps = procedures.iloc[i]['Пункты для выполнения перед процедурой']
+            procedure.doctor_spec = procedures.iloc[i]['Ответственный за процедуру врач']
+            
         return None
 
     def handle(self, *args, **options):

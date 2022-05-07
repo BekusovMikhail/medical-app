@@ -204,3 +204,25 @@ def account(request):
         'error': error if error else None,
     }
     return render(request, 'med/account.html', context)
+
+@login_required
+def settings(request):
+    context = []
+    context.append({'name': 'first_name', 'type': 'text', 'label': 'Имя', 'value': request.user.first_name})
+    context.append({'name': 'last_name', 'type': 'text', 'label': 'Фамилия', 'value': request.user.last_name})
+    context.append({'name': 'patronymic', 'type': 'text', 'label': 'Отчество', 'value': request.user.patronymic})
+    context.append({'name': 'phone', 'type': 'tel', 'label': 'Телефон', 'value': request.user.phone})
+    if request.user.is_patient:
+        pass
+    elif request.user.is_clinic:
+        context.append({'name': 'specialization', 'type': 'text', 'label': 'Специализация', 'value': request.user.clinic.specialization})
+        context.append({'name': 'address', 'type': 'text', 'label': 'Адрес', 'value': request.user.clinic.address})
+        context.append({'name': 'description', 'type': 'textarea', 'label': 'Описание', 'value': request.user.clinic.description})
+    elif request.user.is_doctor:
+        context.append({'name': 'specialization', 'type': 'text', 'label': 'Специализация', 'value': request.user.doctor.specialization})
+        context.append({'name': 'description', 'type': 'textarea', 'label': 'Описание', 'value': request.user.doctor.description})
+
+    return render(request, 'med/settings.html', context={'data': context})
+
+
+

@@ -7,6 +7,7 @@ from django.contrib.postgres.fields import ArrayField
 
 
 class User(AbstractUser):
+    # first_name, last_name
     username = None
     is_patient = models.BooleanField(default=False)
     is_clinic = models.BooleanField(default=False)
@@ -25,11 +26,12 @@ class Patient(models.Model):
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
-        primary_key = True)
+        primary_key=True)
 
 
 class Clinic(models.Model):
     ava = models.ImageField(upload_to='uploads', blank=True, null=True)
+    description = models.TextField(blank=True)
     specialization = models.CharField(max_length=200, default="")
     address = models.CharField(max_length=75, default="")
     extra = models.CharField(max_length=1000, default='Нет дополнительной информации')
@@ -41,6 +43,7 @@ class Clinic(models.Model):
 
 class Doctor(models.Model):
     ava = models.ImageField(upload_to='uploads', blank=True, null=True)
+    description = models.TextField(blank=True)
     specialization = models.CharField(max_length=50, default="")
     extra = models.CharField(max_length=1000, default='Нет дополнительной информации')
     user = models.OneToOneField(
@@ -97,5 +100,5 @@ class Procedure(models.Model):
     name = models.CharField(max_length=40)
     description = models.TextField(default=None, null=True)
     steps = models.TextField(default=None, null=True)
-    doctor = models.CharField(max_length=50, default="") # doctors specialization
+    doctor_spec = models.CharField(max_length=50, default="") # doctors specialization
 

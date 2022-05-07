@@ -41,7 +41,7 @@
     </div>
     <div class="mb-3">
       <label for="phone" class="form-label">Phone number</label>
-      <input type="number" name="phone" form="reg" class="form-control" id="phone" required="required"></textarea>
+      <input type="tel" pattern="^(\+7|7|8)?[\s\-]?\(?[489][0-9]{2}\)?[\s\-]?[0-9]{3}[\s\-]?[0-9]{2}[\s\-]?[0-9]{2}$" name="phone" form="reg" class="form-control" id="phone" required="required"></textarea>
     </div>
     <div class="mb-3" >
         <style>
@@ -103,7 +103,7 @@
         let code;
         reg.onsubmit = async (e) => {
           e.preventDefault();
-          if (!reg.checkValidity()){
+          if (!reg.reportValidity()){
             return
           }
           card1.hidden = 'hidden'

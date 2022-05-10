@@ -56,19 +56,19 @@ class Command(BaseCommand):
             us.save()
             medic.user = us
 
-            
-            # medic.user.name = medics.iloc[i]['Имя']
-            # # medic.user.email = medics.iloc[i]['Email']
-            # # medic.user.phone = medics.iloc[i]['Номер телефона']
-            # medic.user.surname = medics.iloc[i]['Фамилия']
-            # medic.user.patronymic = medics.iloc[i]['Отчество']
-
             medic.specialization = medics.iloc[i]['Должность']
 
             schedule.doctor = medic
 
             medic.schedule = schedule
             medic.save()
+
+            # Временно!!!
+            _ = [random.choice(list(Clinic.objects.all())) for i in range(random.randint(2, 5))]
+            for k in range(len(_)):
+                medic.clinics.add(_[k])
+            medic.save()
+
             schedule.save()
 
 
@@ -78,12 +78,12 @@ class Command(BaseCommand):
         for i in range(len(clinics)):
             clinic = Clinic()
             us = User()
-            us.name = clinics.iloc[i]['Название клиники']
+            us.first_name = clinics.iloc[i]['Название клиники']
             us.is_clinic = True
 
-            # !!! us.email = clinics.iloc[i]['Email'].strip()
-            # !!! us.phone = clinics.iloc[i]['Номер телефона'].strip()
-            # !!! us.set_password("".join([chr(random.randint(65, 65+25) + int(random.choice([0, 32]))) for _ in range(12)]))
+            us.email = clinics.iloc[i]['Email'].strip()
+            us.phone = clinics.iloc[i]['Телефон']
+            us.set_password(str(clinics.iloc[i]['Пароль']))
 
             us.save()
             clinic.user = us
@@ -91,7 +91,7 @@ class Command(BaseCommand):
             clinic.address = clinics.iloc[i]['Адрес']
             clinic.save()
 
-    def parseProcedures(path=None):
+    def parseProcedures(self, path=None):
         procedures = pandas.read_excel(path)
         procedures = procedures[["Название процедуры", "Описание", "Пункты для выполнения перед процедурой", "Ответственный за процедуру врач"]]
         print(procedures)
@@ -101,11 +101,12 @@ class Command(BaseCommand):
             procedure.description = procedures.iloc[i]['Описание']
             procedure.steps = procedures.iloc[i]['Пункты для выполнения перед процедурой']
             procedure.doctor_spec = procedures.iloc[i]['Ответственный за процедуру врач']
+            procedure.save()
             
         return None
 
     def handle(self, *args, **options):
-        self.parseScheduleAndDoctors("med\excel_files\Vrachi.xlsx")
-        #self.parseClinics("med\excel_files\Kliniki.xlsx")
+        self.parseClinics(r"med\excel_files\Kliniki.xlsx")
+        self.parseScheduleAndDoctors(r"med\excel_files\Vrachi.xlsx")
         self.parseProcedures(r"med\excel_files\Protsedury.xlsx")
 

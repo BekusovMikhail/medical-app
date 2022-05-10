@@ -32,7 +32,7 @@ class Patient(models.Model):
 class Clinic(models.Model):
     ava = models.ImageField(upload_to='uploads', blank=True, null=True)
     description = models.TextField(blank=True)
-    specialization = models.CharField(max_length=200, default="")
+    specialization = models.CharField(max_length=1000, default="")
     address = models.CharField(max_length=75, default="")
     extra = models.CharField(max_length=1000, default='Нет дополнительной информации')
     user = models.OneToOneField(
@@ -51,6 +51,8 @@ class Doctor(models.Model):
         on_delete=models.CASCADE,
         primary_key = True)
     
+    clinics = models.ManyToManyField(Clinic)
+
     class Meta:
         verbose_name = 'Доктор'
 
@@ -97,8 +99,22 @@ class Notification(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, default=None, null=True)
 
 class Procedure(models.Model):
-    name = models.CharField(max_length=40)
+    name = models.CharField(max_length=40, default=None, null=True)
     description = models.TextField(default=None, null=True)
     steps = models.TextField(default=None, null=True)
-    doctor_spec = models.CharField(max_length=50, default="") # doctors specialization
+    doctor_spec = models.CharField(max_length=50, default="") # doctors specialization 
+
+class Treatment(models.Model):
+    clinic = models.ForeignKey(Clinic, on_delete=models.CASCADE, null=True, blank=True, unique=False)
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, null=True, blank=True, unique=False)
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, null=True, blank=True, unique=False)
+    status = models.IntegerField(default=-1, unique=False)
+    complaint = models.TextField(default=None, null=True, unique=False)
+    symptoms = models.TextField(default=None, null=True, unique=False)
+
+class CurrentProcedure(models.Model):
+    procedure = models.OneToOneField(Procedure, on_delete=models.CASCADE, null=True, blank=True)
+    time = models.DateTimeField(blank=True, null=True)
+    treatment = models.ForeignKey(Treatment, on_delete = models.CASCADE)
+
 

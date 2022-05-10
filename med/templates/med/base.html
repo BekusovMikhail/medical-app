@@ -80,6 +80,16 @@
         <li class="nav-item">
             <a class="navbar-brand" href="/create_event">Создать событие</a>
         </li>
+        {% if request.user.is_patient %}
+        <li class="nav-item">
+          <a class="navbar-brand" href="/create_treatment">Создать заявку на лечение</a>
+        </li>
+        {% endif %}
+        {% if request.user.is_clinic %}
+        <li class="nav-item">
+          <a class="navbar-brand" href="/accept_treatment">Заявки на лечение</a>
+        </li>
+        {% endif %}
         <li class="nav-item" style="margin-left: auto;">
             <div class="dropdown">
                 <a class="btn btn-primary btn-lg dropdown-toggle navbar-brand" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">

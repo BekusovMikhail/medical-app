@@ -10,4 +10,5 @@ urlpatterns = [
     path('deletenotification', views.deleteNotification, name='deletenotification'),
     path('getevents', views.getEvents, name='getevents'),
     path('changesettings', views.changeSettings, name='changesettings'),
+    path('refreshTreatmentStatus', views.refreshTreatmentStatus, name='refreshTreatmentStatus'),
 ]

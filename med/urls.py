@@ -12,6 +12,9 @@ urlpatterns = [
     path('notifications', views.notifications, name='notifications'),
     path('calendar', views.calendar, name='calendar'),
     path('create_event', views.create_event, name='create_event'),
-    path('account', views.account, name='account')
+    path('account', views.account, name='account'),
     path('settings', views.settings, name='settings'),
+    path('create_treatment', views.create_treatment, name='create_treatment'),
+    path('accept_treatment', views.accept_treatment, name='accept_treatment'),
+    
 ]

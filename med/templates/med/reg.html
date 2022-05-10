@@ -82,17 +82,34 @@
           let d = document.querySelector('#specializ');
           document.querySelector('#specialization_id').required = true
           d.hidden = false
+          d = document.querySelector('#address');
+          document.querySelector('#address_id').required = false
+          d.hidden = true
         }
-        else {
+        else if (radioValue == "patient"){
           let d = document.querySelector('#specializ');
           document.querySelector('#specialization_id').required = false
           d.hidden = true
+          d = document.querySelector('#address');
+          document.querySelector('#address_id').required = false
+          d.hidden = true
+        } else {
+          let d = document.querySelector('#specializ');
+          document.querySelector('#specialization_id').required = true
+          d.hidden = false
+          d = document.querySelector('#address');
+          document.querySelector('#address_id').required = true
+          d.hidden = false
         }
       }
     </script>
     <div id="specializ" class="mb-3" hidden>
       <label for="specialization" class="form-label">Specialization</label>
       <input type="text" name="specialization" form="reg" class="form-control" id="specialization_id"></textarea>
+    </div>
+    <div id="address" class="mb-3" hidden>
+      <label for="address" class="form-label">Address</label>
+      <input type="text" name="address" form="reg" class="form-control" id="address_id"></textarea>
     </div>
     <div class="mb-3">
       <label for="password" class="form-label">Password</label>

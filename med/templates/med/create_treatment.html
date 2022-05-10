@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'med/css/style.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.js"></script>
+  <title>Document</title>
+</head>
+<body style="height: 100vh;
+  background-color: ghostwhite;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;">
+ <div class="card" style="width: 500px;">
+  <div class="card-header">
+    Заявка на лечение
+  </div>
+  <div class="card-body" id='card1'>
+    <form id="cr_treatment" method="post">
+      {% csrf_token %}
+        <div class="mb-3">
+            <label for="complaint" class="form-label">Ваша жалоба/запрос</label>
+            <input type="text" name="complaint" form="cr_treatment" class="form-control" id="complaint" placeholder="Жалоба" required="required">
+        </div>
+        {% if doctors.count > 0 %}
+        <div class="mb-3">
+            <label for="doctors" class="form-label">Выбор лечащего доктора и клиники</label>
+            <p>
+            <select id="selectDoctor" name="doctor_id" required="required" style="margin-bottom: 20px;" class="selectpicker" aria-label="Default select example" data-live-search="true" onchange="changeFunction()">
+                <option value="" disabled selected>Выберите врача</option>
+                {% if clinics.count > 0 %}
+                    {% for clinic in clinics %}
+                    
+                    <optgroup data-opt='{{ clinic.user.id }}' label='{{clinic.user.first_name}}'>
+                        {% for doctor in clinic.doctor_set.all %}
+                        <option value="{{ doctor.user.id }}">{{doctor.user.first_name}} {{doctor.user.last_name}}</option>
+                        {% endfor %}
+                    </optgroup>
+                    {% endfor %}
+                {% endif %}
+            </select>
+            <button id="profileButton" type="button" class="btn btn-dark" hidden>Dark</button>
+            <script>
+                function changeFunction () {
+                    var sel = document.getElementById('selectDoctor');
+                    var optGroup = document.getElementById('optGroupSelect');
+                    optGroup.value = sel.options[sel.selectedIndex].parentElement.dataset.opt;
+                    
+                    var value = sel.options[sel.selectedIndex].value;
+                    
+                    var pBt = document.getElementById('profileButton');
+                    pBt.hidden = false;
+                    pBt.innerText=`Профиль врача`
+                    pBt.setAttribute('onclick',`location.href='/account?id=${value}'`)
+                }
+            </script>
+            </p>
+        </div>
+        {% else %}
+        <!-- <div class="mb-3">
+            <label for="doctor" class="form-label">Какой врач Вам нужен?</label>
+            <input type="text" name="doctor" form="reg" class="form-control" id="doctor" placeholder="Врач" required="required">
+        </div> -->
+        {% endif %}
+        <div class="mb-3">
+            <label for="symptoms" class="form-label">Опишите симптомы</label>
+            <input type="text" name="symptoms" form="cr_treatment" class="form-control" id="symptoms" placeholder="Симптомы" required="required">
+        </div>
+        <input type="text" name="optGroupSelect" form="cr_treatment" class="form-control" id="optGroupSelect" hidden>
+        <input type='submit' form="cr_treatment" class="btn btn-primary" style="width:100%" value='Отправить'></input>
+    </form>
+  </div>
+</div>
+</body>
+</html>

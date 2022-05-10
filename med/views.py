@@ -1,5 +1,8 @@
+import json
+from tokenize import triple_quoted
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
+from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
 from regex import E
@@ -225,4 +228,61 @@ def settings(request):
     return render(request, 'med/settings.html', context={'data': context})
 
 
+@login_required
+def create_treatment(request):
+    if request.user.is_patient:
+        if request.method == "POST":
+            complaint = request.POST.get('complaint', 'Жалоба пуста')
+            doctor = request.POST['doctor_id']
+            symptoms = request.POST.get('symptoms', 'Нет симптомов')
+            clinic = request.POST['optGroupSelect']
+            print(complaint)
+            print(doctor)
+            print(Doctor.objects.get(pk=doctor).user.first_name, Doctor.objects.get(pk=doctor).user.last_name)
+            print(symptoms)
+            print(clinic)
 
+            treatment = Treatment()
+            treatment.doctor = Doctor.objects.get(pk=doctor)
+            treatment.clinic = Clinic.objects.get(pk=clinic)
+            treatment.patient = Patient.objects.get(pk=request.user.id)
+            treatment.complaint = complaint
+            treatment.symptoms = symptoms
+
+            treatment.save()
+
+            return HttpResponseRedirect("/dashboard")
+
+        context = {
+            'clinics': Clinic.objects.all(),
+            'doctors': Doctor.objects.all(),
+            }
+
+        return render(request, 'med/create_treatment.html', context=context)
+        
+    else:
+        return HttpResponseRedirect("/dashboard")
+
+
+@login_required
+def accept_treatment(request):
+    if request.user.is_clinic:
+        context = {}
+        print(request.user.id)
+        treatments_for_accept = Treatment.objects.filter(status=-1, clinic = request.user.id)
+        context_treatments = []
+        for treatment in treatments_for_accept:
+            tr = {}
+            tr['id'] = treatment.id
+            tr['patientName'] = Patient.objects.get(pk=treatment.patient).user.first_name + " " + Patient.objects.get(pk=treatment.patient).user.last_name
+            tr['doctorName'] = Doctor.objects.get(pk=treatment.doctor).user.first_name + " " + Doctor.objects.get(pk=treatment.doctor).user.last_name
+            tr['complaint'] = treatment.complaint
+            tr['symptoms'] = treatment.symptoms
+            context_treatments.append(tr)
+        print(treatments_for_accept)
+        return render(request, 'med/accept_treatment.html', context={
+            'treatments_for_accept': context_treatments,
+        })
+        
+    else:
+        return HttpResponseRedirect("/dashboard")

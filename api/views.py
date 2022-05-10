@@ -106,7 +106,9 @@ def registerUser(request):
             reg_user = Doctor(specialization=specialization, user=user)
         elif role == 'clinic':
             user.is_clinic = True
-            reg_user = Clinic(user=user)
+            specialization = request.POST['specialization']
+            address = request.POST['address']
+            reg_user = Clinic(specialization=specialization, address=address, user=user)
         user.save()
         reg_user.save()
         login(request, user)
@@ -180,3 +182,29 @@ def changeSettings(request):
 
     else:
         return HttpResponseForbidden("Forbidden")
+
+
+@login_required
+@csrf_exempt
+def refreshTreatmentStatus(request):
+    if request.user.is_clinic:
+        data = json.loads(request.body)
+        if 'treatment_id' in data:
+            treatment = Treatment.objects.filter(id=data['treatment_id'])
+            if treatment:
+                treatment = treatment[0]
+                if data['status']=="Confirm":
+                    treatment.status = 0
+                    treatment.save()
+
+                    return HttpResponse(status=200)
+                elif data['status'] =="Decline":
+
+                    treatment.delete()
+                    return HttpResponse(status=200)
+            else:
+                return HttpResponseForbidden("Forbidden")
+        else:
+            return HttpResponseForbidden("Forbidden")
+    else:
+        return HttpResponseRedirect("/dashboard")

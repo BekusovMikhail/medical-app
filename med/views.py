@@ -225,4 +225,33 @@ def settings(request):
     return render(request, 'med/settings.html', context={'data': context})
 
 
+def profile(request):
+    if 'id' in request.GET:
+        user = User.objects.get(id=request.GET['id'])
+    elif request.user.is_authenticated:
+        user = request.user
+    else:
+        return HttpResponseForbidden("Forbidden")
+
+    context = {'avatar': user.avatar.url}
+
+    if user.is_patient:
+        context['name'] = "{} {} {}".format(user.last_name, user.first_name, user.patronymic)
+        context['info'] = []
+
+    elif user.is_clinic:
+        context['name'] = user.first_name
+        context['info'] = []
+        context['info'].append({'title': 'Специализация', 'text': user.clinic.specialization})
+        context['info'].append({'title': 'Адрес', 'text': user.clinic.address})
+        context['info'].append({'title': 'Описание', 'text': user.clinic.description})
+
+    elif user.is_doctor:
+        context['name'] = "{} {} {}".format(user.last_name, user.first_name, user.patronymic)
+        context['info'] = []
+        context['info'].append({'title': 'Специализация', 'text': user.doctor.specialization})
+        context['info'].append({'title': 'Описание', 'text': user.doctor.description})
+
+
+    return render(request, 'med/profile.html', context=context)
 

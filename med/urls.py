@@ -14,4 +14,5 @@ urlpatterns = [
     path('create_event', views.create_event, name='create_event'),
     path('account', views.account, name='account')
     path('settings', views.settings, name='settings'),
+    path('profile', views.profile, name='profile'),
 ]

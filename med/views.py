@@ -165,9 +165,34 @@ def create_event(request):
     }
     return render(request, 'med/create_event.html', context)
 
-@login_required
+
 def account(request):
-    usr = request.user
+    data = []
+    if 'id' in request.GET:
+        user = User.objects.get(id=request.GET['id'])
+    elif request.user.is_authenticated:
+        user = request.user
+        data = []
+        data.append({'name': 'first_name', 'type': 'text', 'label': 'Имя', 'value': request.user.first_name})
+        data.append({'name': 'last_name', 'type': 'text', 'label': 'Фамилия', 'value': request.user.last_name})
+        data.append({'name': 'patronymic', 'type': 'text', 'label': 'Отчество', 'value': request.user.patronymic})
+        data.append({'name': 'phone', 'type': 'tel', 'label': 'Телефон', 'value': request.user.phone})
+        if request.user.is_patient:
+            pass
+        elif request.user.is_clinic:
+            data.append({'name': 'specialization', 'type': 'text', 'label': 'Специализация',
+                         'value': request.user.clinic.specialization})
+            data.append({'name': 'address', 'type': 'text', 'label': 'Адрес', 'value': request.user.clinic.address})
+            data.append(
+                {'name': 'description', 'type': 'textarea', 'label': 'Описание', 'value': request.user.clinic.extra})
+        elif request.user.is_doctor:
+            data.append({'name': 'specialization', 'type': 'text', 'label': 'Специализация',
+                         'value': request.user.doctor.specialization})
+            data.append(
+                {'name': 'description', 'type': 'textarea', 'label': 'Описание', 'value': request.user.doctor.extra})
+    else:
+        return HttpResponseForbidden("Forbidden")
+    usr = user
     if usr.is_doctor:
         usr = usr.doctor
     elif usr.is_clinic:
@@ -176,37 +201,40 @@ def account(request):
         usr = usr.patient
 
     error = None
-    if request.method == "POST":
-        img = request.FILES.get('img', None)
-        snp = request.POST['fullname']
-        descr = request.POST.get('description', 'Нет дополнительной информации')
-        new_phone = request.POST['newphone']
-        new_email = request.POST['newemail']
-
-        usr.ava = img
-
-        newname = snp.split()
-        usr.user.first_name = newname[1]
-        usr.user.last_name = newname[0]
-        usr.user.patronymic = newname[2]
-
-        usr.extra = descr
-        usr.user.phone = new_phone
-
-        try:
-            usr.user.email = new_email
-            usr.save()
-        except:
-            error = 'Пользователь с такой почтой уже существует'
+    # if request.method == "POST":
+    #     img = request.FILES.get('img', None)
+    #     snp = request.POST['fullname']
+    #     descr = request.POST.get('description', 'Нет дополнительной информации')
+    #     new_phone = request.POST['newphone']
+    #     new_email = request.POST['newemail']
+    #
+    #     usr.user.avatar = img
+    #
+    #     newname = snp.split()
+    #     usr.user.first_name = newname[1]
+    #     usr.user.last_name = newname[0]
+    #     usr.user.patronymic = newname[2]
+    #
+    #     usr.extra = descr
+    #     usr.user.phone = new_phone
+    #
+    #     try:
+    #         usr.user.email = new_email
+    #         usr.save()
+    #         usr.user.save()
+    #     except:
+    #         error = 'Пользователь с такой почтой уже существует'
 
     fullname = " ".join([usr.user.last_name, usr.user.first_name, usr.user.patronymic])
     
     context = {
+        'data': data,
         'usr': usr,
         'fullname': fullname,
         'error': error if error else None,
     }
     return render(request, 'med/account.html', context)
+
 
 @login_required
 def settings(request):
@@ -220,12 +248,43 @@ def settings(request):
     elif request.user.is_clinic:
         context.append({'name': 'specialization', 'type': 'text', 'label': 'Специализация', 'value': request.user.clinic.specialization})
         context.append({'name': 'address', 'type': 'text', 'label': 'Адрес', 'value': request.user.clinic.address})
-        context.append({'name': 'description', 'type': 'textarea', 'label': 'Описание', 'value': request.user.clinic.description})
+        context.append({'name': 'description', 'type': 'textarea', 'label': 'Описание', 'value': request.user.clinic.extra})
     elif request.user.is_doctor:
         context.append({'name': 'specialization', 'type': 'text', 'label': 'Специализация', 'value': request.user.doctor.specialization})
-        context.append({'name': 'description', 'type': 'textarea', 'label': 'Описание', 'value': request.user.doctor.description})
+        context.append({'name': 'description', 'type': 'textarea', 'label': 'Описание', 'value': request.user.doctor.extra})
 
     return render(request, 'med/settings.html', context={'data': context})
+
+
+def profile(request):
+    if 'id' in request.GET:
+        user = User.objects.get(id=request.GET['id'])
+    elif request.user.is_authenticated:
+        user = request.user
+    else:
+        return HttpResponseForbidden("Forbidden")
+
+    context = {'avatar': user.avatar.url}
+
+    if user.is_patient:
+        context['name'] = "{} {} {}".format(user.last_name, user.first_name, user.patronymic)
+        context['info'] = []
+
+    elif user.is_clinic:
+        context['name'] = user.first_name
+        context['info'] = []
+        context['info'].append({'title': 'Специализация', 'text': user.clinic.specialization})
+        context['info'].append({'title': 'Адрес', 'text': user.clinic.address})
+        context['info'].append({'title': 'Описание', 'text': user.clinic.extra})
+
+    elif user.is_doctor:
+        context['name'] = "{} {} {}".format(user.last_name, user.first_name, user.patronymic)
+        context['info'] = []
+        context['info'].append({'title': 'Специализация', 'text': user.doctor.specialization})
+        context['info'].append({'title': 'Описание', 'text': user.doctor.extra})
+
+
+    return render(request, 'med/profile.html', context=context)
 
 
 @login_required
@@ -236,11 +295,6 @@ def create_treatment(request):
             doctor = request.POST['doctor_id']
             symptoms = request.POST.get('symptoms', 'Нет симптомов')
             clinic = request.POST['optGroupSelect']
-            print(complaint)
-            print(doctor)
-            print(Doctor.objects.get(pk=doctor).user.first_name, Doctor.objects.get(pk=doctor).user.last_name)
-            print(symptoms)
-            print(clinic)
 
             treatment = Treatment()
             treatment.doctor = Doctor.objects.get(pk=doctor)

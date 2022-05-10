@@ -8,6 +8,7 @@ from django.contrib.postgres.fields import ArrayField
 
 class User(AbstractUser):
     # first_name, last_name
+    avatar = models.ImageField(upload_to='avatars/', default='avatars/default_avatar.jpg')
     username = None
     is_patient = models.BooleanField(default=False)
     is_clinic = models.BooleanField(default=False)
@@ -20,9 +21,7 @@ class User(AbstractUser):
 
 
 class Patient(models.Model):
-    ava = models.ImageField(upload_to='uploads', blank=True, null=True)
-    specialization = models.CharField(max_length=200, default="Пациент")
-    extra = models.CharField(max_length=1000, default='')
+    extra = models.TextField(default="")
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
@@ -30,11 +29,9 @@ class Patient(models.Model):
 
 
 class Clinic(models.Model):
-    ava = models.ImageField(upload_to='uploads', blank=True, null=True)
-    description = models.TextField(blank=True)
-    specialization = models.CharField(max_length=1000, default="")
+    specialization = models.TextField(default="")
     address = models.CharField(max_length=75, default="")
-    extra = models.CharField(max_length=1000, default='Нет дополнительной информации')
+    extra = models.TextField(default="")
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
@@ -42,10 +39,8 @@ class Clinic(models.Model):
 
 
 class Doctor(models.Model):
-    ava = models.ImageField(upload_to='uploads', blank=True, null=True)
-    description = models.TextField(blank=True)
-    specialization = models.CharField(max_length=50, default="")
-    extra = models.CharField(max_length=1000, default='Нет дополнительной информации')
+    specialization = models.TextField(default="")
+    extra = models.TextField(default="")
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,

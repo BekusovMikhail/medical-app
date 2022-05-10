@@ -168,11 +168,11 @@ def changeSettings(request):
         elif user.is_clinic:
             user.clinic.specialization = request.POST['specialization']
             user.clinic.address = request.POST['address']
-            user.clinic.description = request.POST['description']
+            user.clinic.extra = request.POST['description']
             user.clinic.save()
         elif user.is_doctor:
             user.doctor.specialization = request.POST['specialization']
-            user.doctor.description = request.POST['description']
+            user.doctor.extra = request.POST['description']
             user.doctor.save()
 
         user.save()

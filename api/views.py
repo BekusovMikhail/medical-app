@@ -193,10 +193,17 @@ def refreshTreatmentStatus(request):
             treatment = Treatment.objects.filter(id=data['treatment_id'])
             if treatment:
                 treatment = treatment[0]
-                if data['status']=="Confirm":
+                if data['status'] == "Confirm":
                     treatment.status = 0
                     treatment.save()
-
+                    chat1 = Chat()
+                    chat2 = Chat()
+                    chat1.save()
+                    chat2.save()
+                    chat1.users.add(treatment.patient.user, treatment.clinic.user)
+                    chat2.users.add(treatment.patient.user, treatment.doctor.user)
+                    chat1.save()
+                    chat2.save()
                     return HttpResponse(status=200)
                 elif data['status'] =="Decline":
 

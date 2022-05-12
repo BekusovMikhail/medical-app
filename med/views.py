@@ -323,7 +323,7 @@ def accept_treatment(request):
     if request.user.is_clinic:
         context = {}
         print(request.user.id)
-        treatments_for_accept = Treatment.objects.filter(status=-1, clinic = request.user.id)
+        treatments_for_accept = Treatment.objects.filter(status=-1, clinic=request.user.id)
         context_treatments = []
         for treatment in treatments_for_accept:
             tr = {}
@@ -340,3 +340,18 @@ def accept_treatment(request):
         
     else:
         return HttpResponseRedirect("/dashboard")
+
+
+@login_required
+def user_treatment_panel(request):
+
+    if not (request.user.is_doctor and 'id' in request.GET):
+        return HttpResponseForbidden("Forbidden")
+
+    objs = Treatment.objects.filter(id=request.GET['id'])
+    if len(objs) == 0:
+        return HttpResponseForbidden("Forbidden")
+    treat = objs[0]
+    curr_procs = treat.currentprocedure_set.all()
+    procs = Procedure.objects.all()
+    return render(request, 'med/user_treatment_panel.html', context={'treatment': treat, 'curr_procs': curr_procs, 'procs': procs})

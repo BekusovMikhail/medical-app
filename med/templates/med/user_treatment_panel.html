@@ -1,0 +1,92 @@
+{% extends "med/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'med/css/user_treatment_panel.css' %}">
+<script src="{% static 'med/js/user_treatment_panel.js' %}"></script>
+
+
+<div class="content">
+   <div class="info">
+    <h5>Управление пациентом</h5>
+   <div class="card">
+     <div class="card-header">
+       Информация о пациенте
+     </div>
+    <div class="card-body">
+      <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png" alt="" id="userImg">
+      <div class="row">{{ treatment.patient.user.first_name }} {{ treatment.patient.user.last_name }} {{ treatment.patient.user.patronymic }}</div>
+      <div class="row"><div class="col"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope" viewBox="0 0 16 16">
+  <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"/>
+</svg>{{ treatment.patient.user.email }}</div><div class="col"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-telephone" viewBox="0 0 16 16">
+  <path d="M3.654 1.328a.678.678 0 0 0-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.568 17.568 0 0 0 4.168 6.608 17.569 17.569 0 0 0 6.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 0 0-.063-1.015l-2.307-1.794a.678.678 0 0 0-.58-.122l-2.19.547a1.745 1.745 0 0 1-1.657-.459L5.482 8.062a1.745 1.745 0 0 1-.46-1.657l.548-2.19a.678.678 0 0 0-.122-.58L3.654 1.328zM1.884.511a1.745 1.745 0 0 1 2.612.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z"/>
+</svg>{{ treatment.patient.user.phone }}</div></div>
+      <div class="row">{{ treatment.complaint }}</div>
+      <div class="row">{{ treatment.symptoms }}</div>
+    </div>
+  </div>
+   <button type="button" class="btn btn-outline-danger">Завершить лечение пациента</button>
+  </div>
+   <div class="sep"></div>
+   <div class="main">
+     <div class="card">
+     <div class="card-header">
+       История процедур
+     </div>
+    <div class="card-body">
+        {% if curr_procs|length == 0 %}
+        <h4>Нет процедур</h4>
+        {% else %}
+          <div class="list-group list-group-flush">
+            {% for proc in curr_procs %}
+                <div class="list-group-item">
+                  <h5>{{ proc.procedure.name }}</h5>
+                  <p>{{ proc.procedure.description }}</p>
+                  <p>{{ proc.procedure.steps }}</p>
+                  <p>{{ proc.time }}</p>
+                </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+    </div>
+  </div>
+     <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseWidthExample" aria-expanded="false" aria-controls="collapseWidthExample" style="align-self: flex-start;">
+    Назначить новую процедуру
+  </button>
+     <div class="collapse" id="collapseWidthExample">
+        <div class="card card-body">
+          <form id="add_proc" method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="select_proc" class="form-label">Выберите процедуру или создайте новую</label>
+                <select class="form-select" form="add_proc" id="select_proc" aria-label="select">
+                  <option value="-1" selected>Создать новую</option>
+                    {% for proc in procs %}
+                  <option value="{{ proc.id }}" data-name="{{ proc.name }}" data-description="{{ proc.description }}" data-steps="{{ proc.steps }}">{{ proc.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+              <label for="proc_name" class="form-label">Название процедуры</label>
+              <input type="text" name='name' form="add_proc" class="form-control" id="proc_name" required>
+            </div>
+            <div class="mb-3">
+              <label for="proc_description" class="form-label">Описание</label>
+              <textarea rows="2" name='description' form="add_proc" class="form-control" id="proc_description"></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="proc_steps" class="form-label">Шаги</label>
+              <textarea rows="2" name='steps' form="add_proc" class="form-control" id="proc_steps"></textarea>
+            </div>
+            <div class="mb-3">
+                <label style="margin-bottom: 10px;" for="date_time">Выберите дату и время</label>
+                <input type="datetime-local" style="width:100%" form="add_proc" id="date_time" name="date_time" required>
+            </div>
+          </form>
+          <button type="button" class="btn btn-success" style="align-self:flex-end;" id='createProcButt'>Создать</button>
+        </div>
+      </div>
+   </div>
+ </div>
+
+{% endblock content %}

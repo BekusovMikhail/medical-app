@@ -17,4 +17,5 @@ urlpatterns = [
     path('create_treatment', views.create_treatment, name='create_treatment'),
     path('accept_treatment', views.accept_treatment, name='accept_treatment'),
     path('profile', views.profile, name='profile'),
+    path('user_treatment_panel', views.user_treatment_panel, name='user_treatment_panel'),
 ]

@@ -110,6 +110,6 @@ class Treatment(models.Model):
 class CurrentProcedure(models.Model):
     procedure = models.OneToOneField(Procedure, on_delete=models.CASCADE, null=True, blank=True)
     time = models.DateTimeField(blank=True, null=True)
-    treatment = models.ForeignKey(Treatment, on_delete = models.CASCADE)
+    treatment = models.ForeignKey(Treatment, on_delete=models.CASCADE)
 
 

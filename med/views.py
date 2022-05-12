@@ -348,7 +348,7 @@ def user_treatment_panel(request):
     if not (request.user.is_doctor and 'id' in request.GET):
         return HttpResponseForbidden("Forbidden")
 
-    objs = Treatment.objects.filter(id=request.GET['id'])
+    objs = request.user.doctor.treatment_set.filter(id=request.GET['id'])
     if len(objs) == 0:
         return HttpResponseForbidden("Forbidden")
     treat = objs[0]

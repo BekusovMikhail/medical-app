@@ -11,4 +11,6 @@ urlpatterns = [
     path('getevents', views.getEvents, name='getevents'),
     path('changesettings', views.changeSettings, name='changesettings'),
     path('refreshTreatmentStatus', views.refreshTreatmentStatus, name='refreshTreatmentStatus'),
+    path('addCurrProcedure', views.addCurrProcedure, name='addCurrProcedure'),
+    path('closeTreatment', views.closeTreatment, name='closeTreatment'),
 ]

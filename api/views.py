@@ -215,3 +215,40 @@ def refreshTreatmentStatus(request):
             return HttpResponseForbidden("Forbidden")
     else:
         return HttpResponseRedirect("/dashboard")
+
+
+@login_required
+@csrf_exempt
+def addCurrProcedure(request):
+    if not request.user.is_doctor:
+        return HttpResponseForbidden("Forbidden")
+    treat = request.user.doctor.treatment_set.filter(id=request.POST['treat_id'])
+    if len(treat) == 0:
+        return HttpResponseForbidden("Forbidden")
+    treat = treat[0]
+    if request.POST['proc_id'] == '-1':
+        proc = Procedure()
+        proc.name = request.POST['name']
+        proc.description = request.POST['description']
+        proc.steps = request.POST['steps']
+        proc.save()
+    else:
+        proc = Procedure.objects.get(id=request.POST['proc_id'])
+    currProc = CurrentProcedure()
+    currProc.procedure = proc
+    currProc.treatment = treat
+    currProc.time = request.POST['date_time']
+    currProc.save()
+    return HttpResponse(status=200)
+
+
+@login_required
+@csrf_exempt
+def closeTreatment(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        treat = request.user.doctor.treatment_set.get(id=data['treat_id'])
+        treat.delete()
+        return HttpResponse(status=200)
+    else:
+        return HttpResponseForbidden("Forbidden")

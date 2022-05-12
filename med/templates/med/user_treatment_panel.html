@@ -26,7 +26,7 @@
       <div class="row">{{ treatment.symptoms }}</div>
     </div>
   </div>
-   <button type="button" class="btn btn-outline-danger">Завершить лечение пациента</button>
+   <button type="button" class="btn btn-outline-danger" id="closeTreatmentButt">Завершить лечение пациента</button>
   </div>
    <div class="sep"></div>
    <div class="main">
@@ -59,7 +59,7 @@
           <form id="add_proc" method="post" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="select_proc" class="form-label">Выберите процедуру или создайте новую</label>
-                <select class="form-select" form="add_proc" id="select_proc" aria-label="select">
+                <select class="form-select" form="add_proc" name="proc_id" id="select_proc" aria-label="select">
                   <option value="-1" selected>Создать новую</option>
                     {% for proc in procs %}
                   <option value="{{ proc.id }}" data-name="{{ proc.name }}" data-description="{{ proc.description }}" data-steps="{{ proc.steps }}">{{ proc.name }}</option>
@@ -78,6 +78,7 @@
               <label for="proc_steps" class="form-label">Шаги</label>
               <textarea rows="2" name='steps' form="add_proc" class="form-control" id="proc_steps"></textarea>
             </div>
+            <input type="hidden" name="treat_id" form="add_proc" id="treat_id" value="{{ treatment.id }}">
             <div class="mb-3">
                 <label style="margin-bottom: 10px;" for="date_time">Выберите дату и время</label>
                 <input type="datetime-local" style="width:100%" form="add_proc" id="date_time" name="date_time" required>

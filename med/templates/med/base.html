@@ -106,7 +106,7 @@
         <li class="nav-item">
           <a style="text-decoration:none;" href="/notifications" class="icon-button" type="button" class="icon-button" id="dropdownMenuButton" data-mdb-toggle="dropdown" aria-expanded="false">
             <span class="material-icons">notifications</span>
-            <span class="icon-button__badge">{{ notifications_count }}</span>
+            <span class="icon-button__badge">{{ request.user.notification_set.all | length }}</span>
           </a>
       </ul>
       </div>

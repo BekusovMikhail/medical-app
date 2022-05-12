@@ -108,7 +108,7 @@ class Treatment(models.Model):
     symptoms = models.TextField(default=None, null=True, unique=False)
 
 class CurrentProcedure(models.Model):
-    procedure = models.OneToOneField(Procedure, on_delete=models.CASCADE, null=True, blank=True)
+    procedure = models.ForeignKey(Procedure, on_delete=models.CASCADE, null=True, blank=True)
     time = models.DateTimeField(blank=True, null=True)
     treatment = models.ForeignKey(Treatment, on_delete=models.CASCADE)
 

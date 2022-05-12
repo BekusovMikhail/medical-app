@@ -204,6 +204,13 @@ def refreshTreatmentStatus(request):
                     chat2.users.add(treatment.patient.user, treatment.doctor.user)
                     chat1.save()
                     chat2.save()
+
+                    notif = Notification()
+                    notif.sender = treatment.patient.user
+                    notif.user = treatment.clinic.user
+                    notif.text = 'Отправлена заявка на лечение'
+                    notif.save()
+
                     return HttpResponse(status=200)
                 elif data['status'] =="Decline":
 
@@ -239,6 +246,16 @@ def addCurrProcedure(request):
     currProc.treatment = treat
     currProc.time = request.POST['date_time']
     currProc.save()
+
+    e = Event()
+    e.type = '3'
+    e.date_time = currProc.time
+    e.users.add(request.user, currProc.treatment.patient.user, currProc.treatment.clinic.user)
+    e.name = currProc.procedure.name
+    e.description = f'Patient: {currProc.treatment.patient.user.first_name} {currProc.treatment.patient.user.last_name}\nDoctor: {currProc.treatment.doctor.user.first_name} {currProc.treatment.doctor.user.last_name}'
+    e.instructions = currProc.procedure.steps
+    e.save()
+
     return HttpResponse(status=200)
 
 

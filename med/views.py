@@ -134,6 +134,8 @@ def calendar(request):
 
 def create_event(request):
     user = request.user
+    if not user.is_clinic:
+        return HttpResponseForbidden()
 
     if request.method == "POST":
         name = request.POST['name']
@@ -151,9 +153,8 @@ def create_event(request):
             event.save()
 
     users = User.objects.exclude(id=user.id).exclude(is_staff=True)
-    users_p = Patient.objects.exclude(user_id=user.id)
-    users_d = Doctor.objects.exclude(user_id=user.id)
-    users_c = Clinic.objects.exclude(user_id=user.id)
+    users_p = Treatment.objects.values_list('patient', flat=True).filter(clinic=user.id)
+    users_d = user.clinic.doctor_set.all()
 
     context = {
         'notifications_count': len(user.notification_set.all()),
@@ -161,7 +162,6 @@ def create_event(request):
         'list_size': min(len(users), 10) + 3,
         'users_p': users_p,
         'users_d': users_d,
-        'users_c': users_c,
     }
     return render(request, 'med/create_event.html', context)
 
@@ -322,7 +322,7 @@ def create_treatment(request):
 def accept_treatment(request):
     if request.user.is_clinic:
         context = {}
-        print(request.user.id)
+  
         treatments_for_accept = Treatment.objects.filter(status=-1, clinic=request.user.id)
         context_treatments = []
         for treatment in treatments_for_accept:
@@ -333,7 +333,7 @@ def accept_treatment(request):
             tr['complaint'] = treatment.complaint
             tr['symptoms'] = treatment.symptoms
             context_treatments.append(tr)
-        print(treatments_for_accept)
+        
         return render(request, 'med/accept_treatment.html', context={
             'treatments_for_accept': context_treatments,
         })
@@ -347,7 +347,7 @@ def user_treatment_panel(request):
 
     if not (request.user.is_doctor and 'id' in request.GET):
         return HttpResponseForbidden("Forbidden")
-
+    
     objs = request.user.doctor.treatment_set.filter(id=request.GET['id'])
     if len(objs) == 0:
         return HttpResponseForbidden("Forbidden")
@@ -355,3 +355,16 @@ def user_treatment_panel(request):
     curr_procs = treat.currentprocedure_set.all()
     procs = Procedure.objects.all()
     return render(request, 'med/user_treatment_panel.html', context={'treatment': treat, 'curr_procs': curr_procs, 'procs': procs})
+
+@login_required
+def my_patients(request):
+    if not request.user.is_doctor:
+        return HttpResponseForbidden()
+
+    treats = Treatment.objects.filter(doctor=request.user.id)
+    
+    # for patient in Patient.objects.filter(pk__in=patients):
+    context = {
+        'treats': treats,
+    }
+    return render(request, 'med/my_patients.html', context)

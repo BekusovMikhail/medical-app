@@ -3,11 +3,11 @@
 
 <style>
     div.card-body {
-        margin-top: 20px;
         background-color: ghostwhite;
         display: flex;
         flex-direction: row;
         justify-content: center;
+        overflow: auto;
     }
 
     textarea {
@@ -22,7 +22,7 @@
 </style>
 
 <div class="card-body" id='card1'>
-    <form id="reg" method="post">
+    <form id="reg" method="post" style="margin-top: 1rem;">
       {% csrf_token %}
     <div class="mb-3">
       <label for="name" class="form-label">Название события*</label>
@@ -77,6 +77,7 @@
         </select>
     </div>
     {% endif %}
-    <input type='submit' form="reg" class="btn btn-primary" style="width:100%" value='Создать'></input>
-
+    <input type='submit' form="reg" class="btn btn-primary" style="width:100%; margin-bottom: 2rem;" value='Создать'></input>
+    </form>
+</div>
 {% endblock content %}

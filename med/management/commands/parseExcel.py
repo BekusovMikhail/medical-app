@@ -106,7 +106,7 @@ class Command(BaseCommand):
         return None
 
     def handle(self, *args, **options):
-        self.parseClinics(r"med\excel_files\Kliniki.xlsx")
-        self.parseScheduleAndDoctors(r"med\excel_files\Vrachi.xlsx")
-        self.parseProcedures(r"med\excel_files\Protsedury.xlsx")
+        self.parseClinics(r"med/excel_files/Kliniki.xls")
+        self.parseScheduleAndDoctors(r"med/excel_files/Vrachi.xls")
+        self.parseProcedures(r"med/excel_files/Protsedury.xls")
 

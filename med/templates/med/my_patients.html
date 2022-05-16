@@ -51,6 +51,9 @@
 </script>
 
 <div class="main_container">
+{% if treats|length == 0 %}
+    <h3 style="margin-top:2rem;">Пациенты отсутствуют</h3>
+{% endif %}
 {% for treatment in treats %}
   <div class='request' id="{{ treatment.id }}">
       <div class='request-info'>

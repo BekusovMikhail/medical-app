@@ -29,7 +29,7 @@ def run_continuously(interval=10):
                                     notif.save()
 
                 except:
-                    pass
+                    print("error")
                 time.sleep(interval)
 
     continuous_thread = CreateNotificationsThread()

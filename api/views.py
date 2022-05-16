@@ -250,6 +250,7 @@ def addCurrProcedure(request):
     e = Event()
     e.type = '3'
     e.date_time = currProc.time
+    e.save()
     e.users.add(request.user, currProc.treatment.patient.user, currProc.treatment.clinic.user)
     e.name = currProc.procedure.name
     e.description = f'Patient: {currProc.treatment.patient.user.first_name} {currProc.treatment.patient.user.last_name}\nDoctor: {currProc.treatment.doctor.user.first_name} {currProc.treatment.doctor.user.last_name}'

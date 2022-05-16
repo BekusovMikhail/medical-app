@@ -37,7 +37,6 @@ def reg(request):
 @login_required
 def dash(request):
     user = request.user
-    notifications_count = len(user.notification_set.all())
     if user.is_patient:
         role = 'Пациент'
     elif user.is_doctor:
@@ -47,7 +46,7 @@ def dash(request):
     else:
         role = "Не определен"
 
-    return render(request, 'med/dashboard.html', context={'role': role, 'name': user.first_name, 'surname': user.last_name, 'notifications_count': notifications_count})
+    return render(request, 'med/dashboard.html', context={'role': role, 'name': user.first_name, 'surname': user.last_name})
 
 
 def logout_view(request):
@@ -58,14 +57,13 @@ def logout_view(request):
 @login_required
 def chats(request):
     user = request.user
-    notifications_count = len(user.notification_set.all())
     chats = user.chat_set.all()
     users = User.objects.none()
     for chat in chats:
         users = users.union(chat.users.exclude(id=user.id))
     new_users = User.objects.exclude(id=user.id).exclude(is_staff=True)
     new_users = new_users.difference(users)
-    return render(request, 'med/chats.html', context={'users': users, 'new_users': new_users, 'notifications_count': notifications_count})
+    return render(request, 'med/chats.html', context={'users': users, 'new_users': new_users})
 
 
 @login_required
@@ -76,10 +74,9 @@ def chat(request):
     chats1 = user1.chat_set.all()
     chats2 = user2.chat_set.all()
     chat = chats1.intersection(chats2).first()
-    notifications_count = len(user1.notification_set.all())
     if chat:
         messages = chat.message_set.all()
-        return render(request, 'med/chat.html', {"user1": user1, "user2": user2, "chat": chat, "messages": messages, "ip": "127.0.0.1", 'notifications_count': notifications_count})
+        return render(request, 'med/chat.html', {"user1": user1, "user2": user2, "chat": chat, "messages": messages, "ip": "127.0.0.1"})
     else:
         return HttpResponseRedirect("/chats")
 
@@ -129,7 +126,7 @@ def calendar(request):
 
     m_names = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']
 
-    return render(request, 'med/calendar.html', context={'days': days, 'next': [y_next, m_next], 'prev': [y_prev, m_prev], 'm_name': m_names[m-1], 'year': y, 'month': m, 'notifications_count': len(user.notification_set.all())})
+    return render(request, 'med/calendar.html', context={'days': days, 'next': [y_next, m_next], 'prev': [y_prev, m_prev], 'm_name': m_names[m-1], 'year': y, 'month': m})
 
 
 def create_event(request):
@@ -154,8 +151,8 @@ def create_event(request):
 
     users = User.objects.exclude(id=user.id).exclude(is_staff=True)
     users_p = Treatment.objects.values_list('patient', flat=True).filter(clinic=user.id)
+    users_p = Patient.objects.filter(pk__in=users_p)
     users_d = user.clinic.doctor_set.all()
-
     context = {
         'notifications_count': len(user.notification_set.all()),
         'users': users,
@@ -224,8 +221,10 @@ def account(request):
     #         usr.user.save()
     #     except:
     #         error = 'Пользователь с такой почтой уже существует'
-
-    fullname = " ".join([usr.user.last_name, usr.user.first_name, usr.user.patronymic])
+    if usr.user.is_clinic:
+        fullname = usr.user.first_name
+    else:
+        fullname = " ".join([usr.user.last_name, usr.user.first_name, usr.user.patronymic])
     
     context = {
         'data': data,

@@ -382,3 +382,7 @@ def my_treatments(request):
         'treats': treats,
     }
     return render(request, 'med/my_treatments.html', context)
+
+@login_required
+def search(request):
+    return render(request, 'med/search.html')

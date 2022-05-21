@@ -20,4 +20,5 @@ urlpatterns = [
     path('user_treatment_panel', views.user_treatment_panel, name='user_treatment_panel'),
     path('my_patients', views.my_patients, name='my_patients'),
     path('my_treatments', views.my_treatments, name='my_treatments'),
+    path('search', views.search, name='search'),
 ]

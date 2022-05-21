@@ -38,7 +38,7 @@
         <div class="mb-3">
             <label for="doctors" class="form-label">Выбор лечащего доктора и клиники</label>
             <p>
-            <select id="selectDoctor" name="doctor_id" required="required" style="margin-bottom: 20px;" class="selectpicker" aria-label="Default select example" data-live-search="true" onchange="changeFunction()">
+            <select id="selectDoctor" name="doctor_id" required="required" style="margin-bottom: 20px;" class="selectpicker" aria-label="Default select example" data-live-search="true" data-dropup-auto="false" onchange="changeFunction()">
                 <option value="" disabled selected>Выберите врача</option>
                 {% if clinics.count > 0 %}
                     {% for clinic in clinics %}

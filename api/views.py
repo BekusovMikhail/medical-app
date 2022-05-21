@@ -193,9 +193,23 @@ def refreshTreatmentStatus(request):
             treatment = Treatment.objects.filter(id=data['treatment_id'])
             if treatment:
                 treatment = treatment[0]
-                if data['status']=="Confirm":
+                if data['status'] == "Confirm":
                     treatment.status = 0
                     treatment.save()
+                    chat1 = Chat()
+                    chat2 = Chat()
+                    chat1.save()
+                    chat2.save()
+                    chat1.users.add(treatment.patient.user, treatment.clinic.user)
+                    chat2.users.add(treatment.patient.user, treatment.doctor.user)
+                    chat1.save()
+                    chat2.save()
+
+                    notif = Notification()
+                    notif.sender = treatment.patient.user
+                    notif.user = treatment.clinic.user
+                    notif.text = 'Отправлена заявка на лечение'
+                    notif.save()
 
                     return HttpResponse(status=200)
                 elif data['status'] =="Decline":
@@ -208,3 +222,51 @@ def refreshTreatmentStatus(request):
             return HttpResponseForbidden("Forbidden")
     else:
         return HttpResponseRedirect("/dashboard")
+
+
+@login_required
+@csrf_exempt
+def addCurrProcedure(request):
+    if not request.user.is_doctor:
+        return HttpResponseForbidden("Forbidden")
+    treat = request.user.doctor.treatment_set.filter(id=request.POST['treat_id'])
+    if len(treat) == 0:
+        return HttpResponseForbidden("Forbidden")
+    treat = treat[0]
+    if request.POST['proc_id'] == '-1':
+        proc = Procedure()
+        proc.name = request.POST['name']
+        proc.description = request.POST['description']
+        proc.steps = request.POST['steps']
+        proc.save()
+    else:
+        proc = Procedure.objects.get(id=request.POST['proc_id'])
+    currProc = CurrentProcedure()
+    currProc.procedure = proc
+    currProc.treatment = treat
+    currProc.time = request.POST['date_time']
+    currProc.save()
+
+    e = Event()
+    e.type = '3'
+    e.date_time = currProc.time
+    e.save()
+    e.users.add(request.user, currProc.treatment.patient.user, currProc.treatment.clinic.user)
+    e.name = currProc.procedure.name
+    e.description = f'Patient: {currProc.treatment.patient.user.first_name} {currProc.treatment.patient.user.last_name}\nDoctor: {currProc.treatment.doctor.user.first_name} {currProc.treatment.doctor.user.last_name}'
+    e.instructions = currProc.procedure.steps
+    e.save()
+
+    return HttpResponse(status=200)
+
+
+@login_required
+@csrf_exempt
+def closeTreatment(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        treat = request.user.doctor.treatment_set.get(id=data['treat_id'])
+        treat.delete()
+        return HttpResponse(status=200)
+    else:
+        return HttpResponseForbidden("Forbidden")

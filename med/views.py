@@ -37,7 +37,6 @@ def reg(request):
 @login_required
 def dash(request):
     user = request.user
-    notifications_count = len(user.notification_set.all())
     if user.is_patient:
         role = 'Пациент'
     elif user.is_doctor:
@@ -47,7 +46,7 @@ def dash(request):
     else:
         role = "Не определен"
 
-    return render(request, 'med/dashboard.html', context={'role': role, 'name': user.first_name, 'surname': user.last_name, 'notifications_count': notifications_count})
+    return render(request, 'med/dashboard.html', context={'role': role, 'name': user.first_name, 'surname': user.last_name})
 
 
 def logout_view(request):
@@ -58,14 +57,13 @@ def logout_view(request):
 @login_required
 def chats(request):
     user = request.user
-    notifications_count = len(user.notification_set.all())
     chats = user.chat_set.all()
     users = User.objects.none()
     for chat in chats:
         users = users.union(chat.users.exclude(id=user.id))
     new_users = User.objects.exclude(id=user.id).exclude(is_staff=True)
     new_users = new_users.difference(users)
-    return render(request, 'med/chats.html', context={'users': users, 'new_users': new_users, 'notifications_count': notifications_count})
+    return render(request, 'med/chats.html', context={'users': users, 'new_users': new_users})
 
 
 @login_required
@@ -76,10 +74,9 @@ def chat(request):
     chats1 = user1.chat_set.all()
     chats2 = user2.chat_set.all()
     chat = chats1.intersection(chats2).first()
-    notifications_count = len(user1.notification_set.all())
     if chat:
         messages = chat.message_set.all()
-        return render(request, 'med/chat.html', {"user1": user1, "user2": user2, "chat": chat, "messages": messages, "ip": "127.0.0.1", 'notifications_count': notifications_count})
+        return render(request, 'med/chat.html', {"user1": user1, "user2": user2, "chat": chat, "messages": messages, "ip": "127.0.0.1"})
     else:
         return HttpResponseRedirect("/chats")
 
@@ -129,44 +126,40 @@ def calendar(request):
 
     m_names = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']
 
-    return render(request, 'med/calendar.html', context={'days': days, 'next': [y_next, m_next], 'prev': [y_prev, m_prev], 'm_name': m_names[m-1], 'year': y, 'month': m, 'notifications_count': len(user.notification_set.all())})
+    return render(request, 'med/calendar.html', context={'days': days, 'next': [y_next, m_next], 'prev': [y_prev, m_prev], 'm_name': m_names[m-1], 'year': y, 'month': m})
 
 
 def create_event(request):
     user = request.user
-    if user.is_clinic:
-        if request.method == "POST":
-            name = request.POST['name']
-            date_time = request.POST['date_time']
-            description = request.POST['description']
-            instructions = request.POST['instructions']
-            type_ = request.POST['type']
-            user_id_list = request.POST.getlist("user_id[]")
+    if not user.is_clinic:
+        return HttpResponseForbidden()
+    if request.method == "POST":
+        name = request.POST['name']
+        date_time = request.POST['date_time']
+        description = request.POST['description']
+        instructions = request.POST['instructions']
+        type_ = request.POST['type']
+        user_id_list = request.POST.getlist("user_id[]")
 
-            event = Event(name=name, date_time=date_time, description=description, instructions=instructions, type=type_)
+        event = Event(name=name, date_time=date_time, description=description, instructions=instructions, type=type_)
+        event.save()
+        event.users.add(user)
+        for i in user_id_list:
+            event.users.add(User.objects.get(id=int(i)))
             event.save()
-            event.users.add(user)
-            for i in user_id_list:
-                event.users.add(User.objects.get(id=int(i)))
-                event.save()
 
-        users = User.objects.exclude(id=user.id).exclude(is_staff=True)
-        users_p = Patient.objects.exclude(user_id=user.id)
-        users_d = Doctor.objects.exclude(user_id=user.id)
-        users_c = Clinic.objects.exclude(user_id=user.id)
-
-        context = {
-            'notifications_count': len(user.notification_set.all()),
-            'users': users,
-            'list_size': min(len(users), 10) + 3,
-            'users_p': users_p,
-            'users_d': users_d,
-            'users_c': users_c,
-        }
-        return render(request, 'med/create_event.html', context)
-
-    else:
-        return HttpResponseRedirect("/dashboard")
+    users = User.objects.exclude(id=user.id).exclude(is_staff=True)
+    users_p = Treatment.objects.values_list('patient', flat=True).filter(clinic=user.id)
+    users_p = Patient.objects.filter(pk__in=users_p)
+    users_d = user.clinic.doctor_set.all()
+    context = {
+        'notifications_count': len(user.notification_set.all()),
+        'users': users,
+        'list_size': min(len(users), 10) + 3,
+        'users_p': users_p,
+        'users_d': users_d,
+    }
+    return render(request, 'med/create_event.html', context)
 
 
 def account(request):
@@ -227,8 +220,10 @@ def account(request):
     #         usr.user.save()
     #     except:
     #         error = 'Пользователь с такой почтой уже существует'
-
-    fullname = " ".join([usr.user.last_name, usr.user.first_name, usr.user.patronymic])
+    if usr.user.is_clinic:
+        fullname = usr.user.first_name
+    else:
+        fullname = " ".join([usr.user.last_name, usr.user.first_name, usr.user.patronymic])
     
     context = {
         'data': data,
@@ -327,8 +322,8 @@ def create_treatment(request):
 def accept_treatment(request):
     if request.user.is_clinic:
         context = {}
-        print(request.user.id)
-        treatments_for_accept = Treatment.objects.filter(status=-1, clinic = request.user.id)
+  
+        treatments_for_accept = Treatment.objects.filter(status=-1, clinic=request.user.id)
         context_treatments = []
         for treatment in treatments_for_accept:
             tr = {}
@@ -338,7 +333,7 @@ def accept_treatment(request):
             tr['complaint'] = treatment.complaint
             tr['symptoms'] = treatment.symptoms
             context_treatments.append(tr)
-        print(treatments_for_accept)
+        
         return render(request, 'med/accept_treatment.html', context={
             'treatments_for_accept': context_treatments,
             'notifications_count': len(request.user.notification_set.all()),
@@ -346,3 +341,31 @@ def accept_treatment(request):
         
     else:
         return HttpResponseRedirect("/dashboard")
+
+
+@login_required
+def user_treatment_panel(request):
+
+    if not (request.user.is_doctor and 'id' in request.GET):
+        return HttpResponseForbidden("Forbidden")
+    
+    objs = request.user.doctor.treatment_set.filter(id=request.GET['id'])
+    if len(objs) == 0:
+        return HttpResponseForbidden("Forbidden")
+    treat = objs[0]
+    curr_procs = treat.currentprocedure_set.all()
+    procs = Procedure.objects.all()
+    return render(request, 'med/user_treatment_panel.html', context={'treatment': treat, 'curr_procs': curr_procs, 'procs': procs})
+
+@login_required
+def my_patients(request):
+    if not request.user.is_doctor:
+        return HttpResponseForbidden()
+
+    treats = Treatment.objects.filter(doctor=request.user.id)
+    
+    # for patient in Patient.objects.filter(pk__in=patients):
+    context = {
+        'treats': treats,
+    }
+    return render(request, 'med/my_patients.html', context)

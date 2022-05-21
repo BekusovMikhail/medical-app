@@ -4,5 +4,8 @@
         <img src="{{ request.user.avatar.url }}" alt="Аватар" style="width:15rem; height:15rem; border-radius: 50%;">
         <h1>Hello, {{name}} {{ surname }} </h1>
         <h2>{{role}}</h2>
-    </div> 
+    </div>
+    {% for plot in plots %}
+        {{ plot|safe }}
+    {% endfor %}
 {% endblock content %}

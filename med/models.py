@@ -113,7 +113,7 @@ class CurrentProcedure(models.Model):
     procedure = models.ForeignKey(Procedure, on_delete=models.CASCADE, null=True, blank=True)
     time = models.DateTimeField(blank=True, null=True)
     treatment = models.ForeignKey(Treatment, on_delete = models.CASCADE)
-    creationDate = models.DateTimeField(auto_now_add=True)
+    creationDate = models.DateTimeField(auto_now_add=True, blank=True)
 
 class Rating(models.Model):
     rating = models.FloatField(default=2.0, unique=False)

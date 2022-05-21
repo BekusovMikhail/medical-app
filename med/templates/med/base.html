@@ -104,6 +104,10 @@
                   <li><a class="dropdown-item" href="accept_treatment"><i class="bi bi-person"></i>Заявки на лечение</a></li>
                   <li><hr class="dropdown-divider"></li>
                   {% endif %}
+                  {% if request.user.is_patient %}
+                  <li><a class="dropdown-item" href="my_treatments"><i class="bi bi-person"></i>Текущие лечения</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  {% endif %}
                   <li><a id="signout" class="dropdown-item" href="logout"><i class="bi bi-box-arrow-left"></i>Выйти</a></li>
                 </ul>
               </div>

@@ -346,16 +346,16 @@ def accept_treatment(request):
 @login_required
 def user_treatment_panel(request):
 
-    if not (request.user.is_doctor and 'id' in request.GET):
+    if not ((request.user.is_doctor or request.user.is_patient) and 'id' in request.GET):
         return HttpResponseForbidden("Forbidden")
     
-    objs = request.user.doctor.treatment_set.filter(id=request.GET['id'])
+    objs = request.user.patient.treatment_set.filter(id=request.GET['id'])
     if len(objs) == 0:
         return HttpResponseForbidden("Forbidden")
     treat = objs[0]
     curr_procs = treat.currentprocedure_set.all()
     procs = Procedure.objects.all()
-    return render(request, 'med/user_treatment_panel.html', context={'treatment': treat, 'curr_procs': curr_procs, 'procs': procs})
+    return render(request, 'med/user_treatment_panel.html', context={'treatment': treat, 'curr_procs': curr_procs, 'procs': procs, 'user':request.user})
 
 @login_required
 def my_patients(request):
@@ -369,3 +369,16 @@ def my_patients(request):
         'treats': treats,
     }
     return render(request, 'med/my_patients.html', context)
+
+
+@login_required
+def my_treatments(request):
+    if not request.user.is_patient:
+        return HttpResponseForbidden()
+    treats = Treatment.objects.filter(patient=request.user.id)
+    
+    # for patient in Patient.objects.filter(pk__in=patients):
+    context = {
+        'treats': treats,
+    }
+    return render(request, 'med/my_treatments.html', context)

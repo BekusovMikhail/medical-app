@@ -62,7 +62,7 @@
 {% block header %}
  <nav class="navbar navbar-expand-sm navbar-dark bg-primary" style="width: 100%;">
     <div class="container-fluid">
-      <a class="navbar-brand" href="/dashboard">Dashboard</a>
+      <a class="navbar-brand" href="/dashboard">Главная</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
       </button>
@@ -70,6 +70,9 @@
       <ul class="navbar-nav mr-auto" style="width: 100%; flex-direction: row; flex-wrap: wrap;justify-content:flex-start; align-items:center;">
         <li class="nav-item">
           <a class="navbar-brand" href="/profile">Профиль</a>
+        </li>
+        <li class="nav-item">
+          <a class="navbar-brand" href="/search">Поиск</a>
         </li>
         <li class="nav-item">
           <a class="navbar-brand" href="/chats">Чаты</a>
@@ -102,6 +105,10 @@
                   {% endif %}
                   {% if request.user.is_clinic %}
                   <li><a class="dropdown-item" href="accept_treatment"><i class="bi bi-person"></i>Заявки на лечение</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  {% endif %}
+                  {% if request.user.is_patient %}
+                  <li><a class="dropdown-item" href="my_treatments"><i class="bi bi-person"></i>Текущие лечения</a></li>
                   <li><hr class="dropdown-divider"></li>
                   {% endif %}
                   <li><a id="signout" class="dropdown-item" href="logout"><i class="bi bi-box-arrow-left"></i>Выйти</a></li>

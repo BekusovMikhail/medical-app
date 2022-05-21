@@ -18,9 +18,10 @@
     {% endfor %}
 </div>
 <script type="text/javascript">
+
   async function dayClicked(event){
     let day;
-
+    const modal = new bootstrap.Modal('#modalView')
     if (event.target.className == "monthday") {
       day = event.target.getAttribute('data-day')
     } else {
@@ -47,25 +48,24 @@
       } else {
         for (let event of data) {
           // card_body.insertAdjacentHTML('beforeend', `<p class="card-text">${event['date_time']}</p>`)
-          card_body.insertAdjacentHTML('beforeend', `<h5 class="card-title">${event['type']} <sup>${event['date_time'].slice(11, 16)}</sup></h5>`)
+          card_body.insertAdjacentHTML('beforeend', `<h5 class="card-title">${event['type']} ${event['date_time'].slice(11, 16)}</h5>`)
           card_body.insertAdjacentHTML('beforeend', `<p class="card-text">${event['name']}</p>`)
           // card_body.insertAdjacentHTML('beforeend', `<p class="card-text">${event['date_time']}</p>`)
           card_body.insertAdjacentHTML('beforeend', `<p class="card-text">${event['description']}</p>`)
           card_body.insertAdjacentHTML('beforeend', `<p class="card-text">${event['instructions']}</p>`)
         }
       }
-      modalViewCalendar.style.display = "block";
-      modalViewContent.style.display = "block";
+      modal.show()
     }
   }
 
   function closeClicked(event){
-    modalViewCalendar.style.display = "none";
-    modalViewContent.style.display = "none";
+    const modal = new bootstrap.Modal('#modalView')
     let elements = document.querySelectorAll('#card_header > h5, #card_body > *');
     for (let elem of elements){
       elem.remove()
     }
+    modal.hide()
   }
 </script>
 <nav aria-label="Page navigation example" style="margin-top: auto; align-self: center;">
@@ -83,14 +83,18 @@
     </li>
   </ul>
 </nav>
-<div class="modalViewCalendar" style="display: None;" id="modalViewCalendar">
-</div>
-<div class="card" style="display: None; overflow-y:hidden;" id='modalViewContent'>
-  <div class="card-header" id="card_header" style="display: flex; flex-direction: row; align-items: center;">
-    <button type="button" id='closeButton' style='margin-left: auto;' class="btn-close" aria-label="Close"></button>
-  </div>
-  <div class="card-body" id="card_body" style="overflow-y: auto; height: 94%">
-  </div>
+<div class="modal fade" id="modalView" tabindex="-1" data-bs-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" id="card_header" style="display: flex; flex-direction: row; align-items: center;">
+            </div>
+            <div class="modal-body" id="card_body" style="overflow-y: auto; height: 94%">
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closeButton">Close</button>
+          </div>
+        </div>
+    </div>
 </div>
 <script type="text/javascript">
   closeButton.onclick = closeClicked

@@ -118,10 +118,19 @@ class Treatment(models.Model):
     status = models.IntegerField(default=-1, unique=False)
     complaint = models.TextField(default=None, null=True, unique=False)
     symptoms = models.TextField(default=None, null=True, unique=False)
+    creationDate = models.DateTimeField(auto_now_add=True)
+    closeDate = models.DateTimeField(null=True, blank=True, default=None)
 
 class CurrentProcedure(models.Model):
     procedure = models.ForeignKey(Procedure, on_delete=models.CASCADE, null=True, blank=True)
     time = models.DateTimeField(blank=True, null=True)
-    treatment = models.ForeignKey(Treatment, on_delete=models.CASCADE)
+    treatment = models.ForeignKey(Treatment, on_delete = models.CASCADE)
+    creationDate = models.DateTimeField(auto_now_add=True, blank=True)
 
+class Rating(models.Model):
+    rating = models.FloatField(default=2.0, unique=False)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, unique=False, related_name='owner')
+    rater = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, unique=False, related_name='rater')
+    creationDate = models.DateTimeField(auto_now_add=True)
+    treatment = models.OneToOneField(Treatment, on_delete = models.SET_NULL, null=True, blank=True)
 

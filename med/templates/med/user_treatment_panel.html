@@ -7,26 +7,128 @@
 <script src="{% static 'med/js/user_treatment_panel.js' %}"></script>
 
 
+
 <div class="content">
    <div class="info">
+    {% if user.is_doctor %}
     <h5>Управление пациентом</h5>
+    {% elif user.is_patient %}
+    <h5>Лечение</h5>
+    {% endif %}
    <div class="card">
-     <div class="card-header">
-       Информация о пациенте
-     </div>
+    {% if user.is_doctor %}
+    <div class="card-header">Информация о пациенте</div>
+    {% elif user.is_patient %}
+    <div class="card-header">Информация о докторе</div>
+    {% endif %}
     <div class="card-body">
       <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png" alt="" id="userImg">
-      <div class="row">{{ treatment.patient.user.first_name }} {{ treatment.patient.user.last_name }} {{ treatment.patient.user.patronymic }}</div>
-      <div class="row"><div class="col"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope" viewBox="0 0 16 16">
-  <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"/>
-</svg>{{ treatment.patient.user.email }}</div><div class="col"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-telephone" viewBox="0 0 16 16">
-  <path d="M3.654 1.328a.678.678 0 0 0-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.568 17.568 0 0 0 4.168 6.608 17.569 17.569 0 0 0 6.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 0 0-.063-1.015l-2.307-1.794a.678.678 0 0 0-.58-.122l-2.19.547a1.745 1.745 0 0 1-1.657-.459L5.482 8.062a1.745 1.745 0 0 1-.46-1.657l.548-2.19a.678.678 0 0 0-.122-.58L3.654 1.328zM1.884.511a1.745 1.745 0 0 1 2.612.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z"/>
-</svg>{{ treatment.patient.user.phone }}</div></div>
+      {% if user.is_doctor %}
+      <div class="row">{{ treatment.patient.user.last_name }} {{ treatment.patient.user.first_name }} {{ treatment.patient.user.patronymic }}</div>
+      {% elif user.is_patient %}
+      <div class="row">{{ treatment.doctor.user.last_name }} {{ treatment.doctor.user.first_name }} {{ treatment.doctor.user.patronymic }}</div>
+      {% endif %}
+      <div class="row">
+        <div class="col">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope" viewBox="0 0 16 16">
+            <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"/>
+          </svg>
+          {% if user.is_doctor %}
+          {{ treatment.patient.user.email }}
+          {% elif user.is_patient %}
+          {{ treatment.doctor.user.email }}
+          {% endif %}
+        </div>
+        <div class="col">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-telephone" viewBox="0 0 16 16">
+            <path d="M3.654 1.328a.678.678 0 0 0-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.568 17.568 0 0 0 4.168 6.608 17.569 17.569 0 0 0 6.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 0 0-.063-1.015l-2.307-1.794a.678.678 0 0 0-.58-.122l-2.19.547a1.745 1.745 0 0 1-1.657-.459L5.482 8.062a1.745 1.745 0 0 1-.46-1.657l.548-2.19a.678.678 0 0 0-.122-.58L3.654 1.328zM1.884.511a1.745 1.745 0 0 1 2.612.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z"/>
+          </svg>
+          {% if user.is_doctor %}
+          {{ treatment.patient.user.phone }}
+          {% elif user.is_patient %}
+          {{ treatment.doctor.user.phone }}
+          {% endif %}
+        </div>
+      </div>
       <div class="row">{{ treatment.complaint }}</div>
       <div class="row">{{ treatment.symptoms }}</div>
+
+
+      {% if user.is_patient %}
+      <div class="star-source">
+        <svg>
+               <linearGradient x1="50%" y1="5.41294643%" x2="87.5527344%" y2="65.4921875%" id="grad">
+                  <stop stop-color="#250dad" offset="0%"></stop>
+                  <stop stop-color="#090330" offset="60%"></stop>
+                  <stop stop-color="#080611" offset="100%"></stop>
+              </linearGradient>
+          <symbol id="star" viewBox="153 89 106 108">   
+            <polygon id="star-shape" stroke="url(#grad)" stroke-width="5" fill="currentColor" points="206 162.5 176.610737 185.45085 189.356511 150.407797 158.447174 129.54915 195.713758 130.842203 206 95 216.286242 130.842203 253.552826 129.54915 222.643489 150.407797 235.389263 185.45085"></polygon>
+          </symbol>
+        </svg>
+      </div>
+      <div class="star-container">
+        {% if rating == 5 %}
+        <input type="radio" name="star" id="five" value="5" onchange="getValue(this)" checked ></input>
+        {% else %}
+        <input type="radio" name="star" id="five" value="5" onchange="getValue(this)"></input>
+        {% endif %}
+        <label for="five">
+          <svg class="star">
+            <use xlink:href="#star"/>
+          </svg>
+        </label>
+        {% if rating == 4 %}
+        <input type="radio" name="star" id="four" value="4" onchange="getValue(this)" checked></input>
+        {% else %}
+        <input type="radio" name="star" id="four" value="4" onchange="getValue(this)"></input>
+        {% endif %}
+        <label for="four">
+          <svg class="star">
+            <use xlink:href="#star"/>
+          </svg>
+        </label>
+        {% if rating == 3 %}
+        <input type="radio" name="star" id="three" value="3" onchange="getValue(this)" checked></input>
+        {% else %}
+        <input type="radio" name="star" id="three" value="3" onchange="getValue(this)"></input>
+        {% endif %}
+        <label for="three">
+          <svg class="star">
+            <use xlink:href="#star"/>
+          </svg>
+        </label>
+        {% if rating == 2 %}
+        <input type="radio" name="star" id="two" value="2" onchange="getValue(this)" checked></input>
+        {% else %}
+        <input type="radio" name="star" id="two" value="2" onchange="getValue(this)"></input>
+        {% endif %}
+        <label for="two">
+          <svg class="star">
+            <use xlink:href="#star" />
+          </svg>
+        </label>
+        {% if rating == 1 %}
+        <input type="radio" name="star" id="one" value="1" onchange="getValue(this)" checked></input>
+        {% else %}
+        <input type="radio" name="star" id="one" value="1" onchange="getValue(this)"></input>
+        {% endif %}
+        
+        <label for="one">
+         <svg class="star">
+          <use xlink:href="#star" />
+         </svg>
+        </label>
+      </div>
+      {% endif %}
+
+
     </div>
   </div>
-   <button type="button" class="btn btn-outline-danger" id="closeTreatmentButt">Завершить лечение пациента</button>
+  {% if user.is_doctor %}
+  <button type="button" class="btn btn-outline-danger" id="closeTreatmentButt">Завершить лечение пациента</button>
+  {% endif %}
+   
   </div>
    <div class="sep"></div>
    <div class="main">
@@ -49,9 +151,12 @@
             {% endfor %}
           </div>
         {% endif %}
+
+
     </div>
   </div>
-     <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseWidthExample" aria-expanded="false" aria-controls="collapseWidthExample" style="align-self: flex-start;">
+  {% if user.is_doctor %}
+  <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseWidthExample" aria-expanded="false" aria-controls="collapseWidthExample" style="align-self: flex-start;">
     Назначить новую процедуру
   </button>
      <div class="collapse" id="collapseWidthExample">
@@ -78,7 +183,7 @@
               <label for="proc_steps" class="form-label">Шаги</label>
               <textarea rows="2" name='steps' form="add_proc" class="form-control" id="proc_steps"></textarea>
             </div>
-            <input type="hidden" name="treat_id" form="add_proc" id="treat_id" value="{{ treatment.id }}">
+            
             <div class="mb-3">
                 <label style="margin-bottom: 10px;" for="date_time">Выберите дату и время</label>
                 <input type="datetime-local" style="width:100%" form="add_proc" id="date_time" name="date_time" required>
@@ -87,6 +192,8 @@
           <button type="button" class="btn btn-success" style="align-self:flex-end;" id='createProcButt'>Создать</button>
         </div>
       </div>
+    {% endif %}
+    <input type="hidden" name="treat_id" form="add_proc" id="treat_id" value="{{ treatment.id }}">
    </div>
  </div>
 

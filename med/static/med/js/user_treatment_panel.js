@@ -51,3 +51,19 @@ async function closeTreatment(event) {
 		    alert('Unknown error. Try again')
         }
 }
+
+async function getValue(radio) {
+    let response = await fetch('/api/setDoctorRating', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({'treat_id': treat_id.value, 'rate': radio.value})})
+        if (response.ok) {
+            radio.checked = true;
+            document.location.reload();
+        } else {
+            alert('Unknown error. Try again')
+        }
+
+}

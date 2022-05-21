@@ -1,5 +1,7 @@
 import json
 from tokenize import triple_quoted
+
+from django.db.models import Count
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import csrf_exempt
@@ -9,7 +11,8 @@ from regex import E
 from .models import *
 import datetime
 import calendar as calendar_lib
-
+import plotly.express as px
+from django.db.models.functions import TruncMonth
 
 def index(request):
     if request.method == "POST":
@@ -37,16 +40,36 @@ def reg(request):
 @login_required
 def dash(request):
     user = request.user
+    plots = []
     if user.is_patient:
         role = 'Пациент'
     elif user.is_doctor:
         role = 'Доктор'
+        today = datetime.date.today();
+        today = today.replace(day=1)
+        delta = datetime.timedelta(days=2)
+        counts = []
+        months = []
+        print(user.doctor.treatment_set.all())
+        for i in range(6):
+            months.append(today)
+            counts.append(user.doctor.treatment_set.all().filter(creationDate__month=today.month).count())
+            today = today - delta
+            today = today.replace(day=1)
+        counts.reverse()
+        months.reverse()
+        # data = user.doctor.treatment_set.annotate(month=TruncMonth('creationDate')).values('month').annotate(c=Count('id')).order_by()
+        fig = px.bar(x=list(map(lambda x: x.strftime("%B %Y"), months)), y=counts, labels={'x': 'Месяц', 'y': 'Количество пациентов'})
+        code = fig.to_html(full_html=False)
+        plots.append(code)
+        for i in counts:
+            print(i)
     elif user.is_clinic:
         role = 'Клиника'
     else:
         role = "Не определен"
 
-    return render(request, 'med/dashboard.html', context={'role': role, 'name': user.first_name, 'surname': user.last_name})
+    return render(request, 'med/dashboard.html', context={'role': role, 'name': user.first_name, 'surname': user.last_name, 'plots': plots})
 
 
 def logout_view(request):

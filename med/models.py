@@ -106,6 +106,7 @@ class Treatment(models.Model):
     status = models.IntegerField(default=-1, unique=False)
     complaint = models.TextField(default=None, null=True, unique=False)
     symptoms = models.TextField(default=None, null=True, unique=False)
+    creationDate = models.DateTimeField(auto_now_add=True)
 
 class CurrentProcedure(models.Model):
     procedure = models.ForeignKey(Procedure, on_delete=models.CASCADE, null=True, blank=True)

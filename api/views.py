@@ -213,7 +213,7 @@ def refreshTreatmentStatus(request):
 
                     return HttpResponse(status=200)
                 elif data['status'] =="Decline":
-
+                    
                     treatment.delete()
                     return HttpResponse(status=200)
             else:
@@ -263,6 +263,8 @@ def addCurrProcedure(request):
 @login_required
 @csrf_exempt
 def closeTreatment(request):
+    if not request.user.is_doctor:
+        return HttpResponseForbidden("Forbidden")
     if request.method == "POST":
         data = json.loads(request.body)
         treat = request.user.doctor.treatment_set.get(id=data['treat_id'])

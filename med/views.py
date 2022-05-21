@@ -50,10 +50,9 @@ def dash(request):
         delta = datetime.timedelta(days=2)
         counts = []
         months = []
-        print(user.doctor.treatment_set.all())
         for i in range(6):
             months.append(today)
-            counts.append(user.doctor.treatment_set.all().filter(creationDate__month=today.month).count())
+            counts.append(user.doctor.treatment_set.filter(creationDate__month=today.month).count())
             today = today - delta
             today = today.replace(day=1)
         counts.reverse()
@@ -156,7 +155,6 @@ def create_event(request):
     user = request.user
     if not user.is_clinic:
         return HttpResponseForbidden()
-
     if request.method == "POST":
         name = request.POST['name']
         date_time = request.POST['date_time']
@@ -254,6 +252,7 @@ def account(request):
         'usr': usr,
         'fullname': fullname,
         'error': error if error else None,
+        'notifications_count': len(request.user.notification_set.all()),
     }
     return render(request, 'med/account.html', context)
 
@@ -275,7 +274,7 @@ def settings(request):
         context.append({'name': 'specialization', 'type': 'text', 'label': 'Специализация', 'value': request.user.doctor.specialization})
         context.append({'name': 'description', 'type': 'textarea', 'label': 'Описание', 'value': request.user.doctor.extra})
 
-    return render(request, 'med/settings.html', context={'data': context})
+    return render(request, 'med/settings.html', context={'data': context, 'notifications_count': len(request.user.notification_set.all())})
 
 
 def profile(request):
@@ -286,7 +285,7 @@ def profile(request):
     else:
         return HttpResponseForbidden("Forbidden")
 
-    context = {'avatar': user.avatar.url}
+    context = {'avatar': user.avatar.url, 'notifications_count': len(request.user.notification_set.all()),}
 
     if user.is_patient:
         context['name'] = "{} {} {}".format(user.last_name, user.first_name, user.patronymic)
@@ -332,6 +331,7 @@ def create_treatment(request):
         context = {
             'clinics': Clinic.objects.all(),
             'doctors': Doctor.objects.all(),
+            'notifications_count': len(request.user.notification_set.all()),
             }
 
         return render(request, 'med/create_treatment.html', context=context)
@@ -358,6 +358,7 @@ def accept_treatment(request):
         
         return render(request, 'med/accept_treatment.html', context={
             'treatments_for_accept': context_treatments,
+            'notifications_count': len(request.user.notification_set.all()),
         })
         
     else:
@@ -367,16 +368,16 @@ def accept_treatment(request):
 @login_required
 def user_treatment_panel(request):
 
-    if not (request.user.is_doctor and 'id' in request.GET):
+    if not ((request.user.is_doctor or request.user.is_patient) and 'id' in request.GET):
         return HttpResponseForbidden("Forbidden")
     
-    objs = request.user.doctor.treatment_set.filter(id=request.GET['id'])
+    objs = request.user.patient.treatment_set.filter(id=request.GET['id'])
     if len(objs) == 0:
         return HttpResponseForbidden("Forbidden")
     treat = objs[0]
     curr_procs = treat.currentprocedure_set.all()
     procs = Procedure.objects.all()
-    return render(request, 'med/user_treatment_panel.html', context={'treatment': treat, 'curr_procs': curr_procs, 'procs': procs})
+    return render(request, 'med/user_treatment_panel.html', context={'treatment': treat, 'curr_procs': curr_procs, 'procs': procs, 'user':request.user})
 
 @login_required
 def my_patients(request):
@@ -390,3 +391,20 @@ def my_patients(request):
         'treats': treats,
     }
     return render(request, 'med/my_patients.html', context)
+
+
+@login_required
+def my_treatments(request):
+    if not request.user.is_patient:
+        return HttpResponseForbidden()
+    treats = Treatment.objects.filter(patient=request.user.id)
+    
+    # for patient in Patient.objects.filter(pk__in=patients):
+    context = {
+        'treats': treats,
+    }
+    return render(request, 'med/my_treatments.html', context)
+
+@login_required
+def search(request):
+    return render(request, 'med/search.html')

@@ -22,6 +22,13 @@ class User(AbstractUser):
 
 class Patient(models.Model):
     extra = models.TextField(default="")
+    passport_number = models.CharField(null=True, max_length=4, default=None)
+    passport_series = models.CharField(null=True, max_length=6, default=None)
+    snils = models.CharField(null=True, max_length=11, default=None)
+    age = models.CharField(null=True, default=None, max_length=3)
+    allergies = models.TextField(null=True, default=None)
+    diseases = models.TextField(null=True, default=None)
+
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
@@ -41,6 +48,12 @@ class Clinic(models.Model):
 class Doctor(models.Model):
     specialization = models.TextField(default="")
     extra = models.TextField(default="")
+    passport_number = models.CharField(null=True, max_length=4, default=None)
+    passport_series = models.CharField(null=True, max_length=6, default=None)
+    license = models.CharField(null=True, max_length=1000, default=None)
+    license_date = models.DateTimeField(null=True, default=None)
+    experience = models.CharField(null=True, default=None, max_length=100)
+
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
@@ -60,7 +73,6 @@ class Schedule(models.Model):
     friday = ArrayField(models.TimeField(auto_now=False, auto_now_add=False), size=2, null=True)
     saturday = ArrayField(models.TimeField(auto_now=False, auto_now_add=False), size=2, null=True)
     sunday = ArrayField(models.TimeField(auto_now=False, auto_now_add=False), size=2, null=True)
-
 
 
 class Chat(models.Model):
@@ -120,4 +132,5 @@ class Rating(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, unique=False, related_name='owner')
     rater = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, unique=False, related_name='rater')
     creationDate = models.DateTimeField(auto_now_add=True)
+    treatment = models.OneToOneField(Treatment, on_delete = models.SET_NULL, null=True, blank=True)
 

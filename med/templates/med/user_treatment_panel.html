@@ -7,6 +7,7 @@
 <script src="{% static 'med/js/user_treatment_panel.js' %}"></script>
 
 
+
 <div class="content">
    <div class="info">
     {% if user.is_doctor %}
@@ -51,6 +52,77 @@
       </div>
       <div class="row">{{ treatment.complaint }}</div>
       <div class="row">{{ treatment.symptoms }}</div>
+
+
+      {% if user.is_patient %}
+      <div class="star-source">
+        <svg>
+               <linearGradient x1="50%" y1="5.41294643%" x2="87.5527344%" y2="65.4921875%" id="grad">
+                  <stop stop-color="#250dad" offset="0%"></stop>
+                  <stop stop-color="#090330" offset="60%"></stop>
+                  <stop stop-color="#080611" offset="100%"></stop>
+              </linearGradient>
+          <symbol id="star" viewBox="153 89 106 108">   
+            <polygon id="star-shape" stroke="url(#grad)" stroke-width="5" fill="currentColor" points="206 162.5 176.610737 185.45085 189.356511 150.407797 158.447174 129.54915 195.713758 130.842203 206 95 216.286242 130.842203 253.552826 129.54915 222.643489 150.407797 235.389263 185.45085"></polygon>
+          </symbol>
+        </svg>
+      </div>
+      <div class="star-container">
+        {% if rating == 5 %}
+        <input type="radio" name="star" id="five" value="5" onchange="getValue(this)" checked ></input>
+        {% else %}
+        <input type="radio" name="star" id="five" value="5" onchange="getValue(this)"></input>
+        {% endif %}
+        <label for="five">
+          <svg class="star">
+            <use xlink:href="#star"/>
+          </svg>
+        </label>
+        {% if rating == 4 %}
+        <input type="radio" name="star" id="four" value="4" onchange="getValue(this)" checked></input>
+        {% else %}
+        <input type="radio" name="star" id="four" value="4" onchange="getValue(this)"></input>
+        {% endif %}
+        <label for="four">
+          <svg class="star">
+            <use xlink:href="#star"/>
+          </svg>
+        </label>
+        {% if rating == 3 %}
+        <input type="radio" name="star" id="three" value="3" onchange="getValue(this)" checked></input>
+        {% else %}
+        <input type="radio" name="star" id="three" value="3" onchange="getValue(this)"></input>
+        {% endif %}
+        <label for="three">
+          <svg class="star">
+            <use xlink:href="#star"/>
+          </svg>
+        </label>
+        {% if rating == 2 %}
+        <input type="radio" name="star" id="two" value="2" onchange="getValue(this)" checked></input>
+        {% else %}
+        <input type="radio" name="star" id="two" value="2" onchange="getValue(this)"></input>
+        {% endif %}
+        <label for="two">
+          <svg class="star">
+            <use xlink:href="#star" />
+          </svg>
+        </label>
+        {% if rating == 1 %}
+        <input type="radio" name="star" id="one" value="1" onchange="getValue(this)" checked></input>
+        {% else %}
+        <input type="radio" name="star" id="one" value="1" onchange="getValue(this)"></input>
+        {% endif %}
+        
+        <label for="one">
+         <svg class="star">
+          <use xlink:href="#star" />
+         </svg>
+        </label>
+      </div>
+      {% endif %}
+
+
     </div>
   </div>
   {% if user.is_doctor %}
@@ -79,6 +151,8 @@
             {% endfor %}
           </div>
         {% endif %}
+
+
     </div>
   </div>
   {% if user.is_doctor %}
@@ -109,7 +183,7 @@
               <label for="proc_steps" class="form-label">Шаги</label>
               <textarea rows="2" name='steps' form="add_proc" class="form-control" id="proc_steps"></textarea>
             </div>
-            <input type="hidden" name="treat_id" form="add_proc" id="treat_id" value="{{ treatment.id }}">
+            
             <div class="mb-3">
                 <label style="margin-bottom: 10px;" for="date_time">Выберите дату и время</label>
                 <input type="datetime-local" style="width:100%" form="add_proc" id="date_time" name="date_time" required>
@@ -118,7 +192,8 @@
           <button type="button" class="btn btn-success" style="align-self:flex-end;" id='createProcButt'>Создать</button>
         </div>
       </div>
-  {% endif %}
+    {% endif %}
+    <input type="hidden" name="treat_id" form="add_proc" id="treat_id" value="{{ treatment.id }}">
    </div>
  </div>
 

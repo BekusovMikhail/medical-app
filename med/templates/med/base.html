@@ -77,9 +77,11 @@
         <li class="nav-item">
           <a class="navbar-brand" href="/calendar">Календарь</a>
         </li>
+        {% if request.user.is_clinic %}
         <li class="nav-item">
             <a class="navbar-brand" href="/create_event">Создать событие</a>
         </li>
+        {% endif %}
         {% if request.user.is_patient %}
         <li class="nav-item">
           <a class="navbar-brand" href="/create_treatment">Создать заявку на лечение</a>

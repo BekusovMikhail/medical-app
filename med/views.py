@@ -134,36 +134,39 @@ def calendar(request):
 
 def create_event(request):
     user = request.user
+    if user.is_clinic:
+        if request.method == "POST":
+            name = request.POST['name']
+            date_time = request.POST['date_time']
+            description = request.POST['description']
+            instructions = request.POST['instructions']
+            type_ = request.POST['type']
+            user_id_list = request.POST.getlist("user_id[]")
 
-    if request.method == "POST":
-        name = request.POST['name']
-        date_time = request.POST['date_time']
-        description = request.POST['description']
-        instructions = request.POST['instructions']
-        type_ = request.POST['type']
-        user_id_list = request.POST.getlist("user_id[]")
-
-        event = Event(name=name, date_time=date_time, description=description, instructions=instructions, type=type_)
-        event.save()
-        event.users.add(user)
-        for i in user_id_list:
-            event.users.add(User.objects.get(id=int(i)))
+            event = Event(name=name, date_time=date_time, description=description, instructions=instructions, type=type_)
             event.save()
+            event.users.add(user)
+            for i in user_id_list:
+                event.users.add(User.objects.get(id=int(i)))
+                event.save()
 
-    users = User.objects.exclude(id=user.id).exclude(is_staff=True)
-    users_p = Patient.objects.exclude(user_id=user.id)
-    users_d = Doctor.objects.exclude(user_id=user.id)
-    users_c = Clinic.objects.exclude(user_id=user.id)
+        users = User.objects.exclude(id=user.id).exclude(is_staff=True)
+        users_p = Patient.objects.exclude(user_id=user.id)
+        users_d = Doctor.objects.exclude(user_id=user.id)
+        users_c = Clinic.objects.exclude(user_id=user.id)
 
-    context = {
-        'notifications_count': len(user.notification_set.all()),
-        'users': users,
-        'list_size': min(len(users), 10) + 3,
-        'users_p': users_p,
-        'users_d': users_d,
-        'users_c': users_c,
-    }
-    return render(request, 'med/create_event.html', context)
+        context = {
+            'notifications_count': len(user.notification_set.all()),
+            'users': users,
+            'list_size': min(len(users), 10) + 3,
+            'users_p': users_p,
+            'users_d': users_d,
+            'users_c': users_c,
+        }
+        return render(request, 'med/create_event.html', context)
+
+    else:
+        return HttpResponseRedirect("/dashboard")
 
 
 def account(request):
@@ -232,6 +235,7 @@ def account(request):
         'usr': usr,
         'fullname': fullname,
         'error': error if error else None,
+        'notifications_count': len(request.user.notification_set.all()),
     }
     return render(request, 'med/account.html', context)
 
@@ -253,7 +257,7 @@ def settings(request):
         context.append({'name': 'specialization', 'type': 'text', 'label': 'Специализация', 'value': request.user.doctor.specialization})
         context.append({'name': 'description', 'type': 'textarea', 'label': 'Описание', 'value': request.user.doctor.extra})
 
-    return render(request, 'med/settings.html', context={'data': context})
+    return render(request, 'med/settings.html', context={'data': context, 'notifications_count': len(request.user.notification_set.all())})
 
 
 def profile(request):
@@ -264,7 +268,7 @@ def profile(request):
     else:
         return HttpResponseForbidden("Forbidden")
 
-    context = {'avatar': user.avatar.url}
+    context = {'avatar': user.avatar.url, 'notifications_count': len(request.user.notification_set.all()),}
 
     if user.is_patient:
         context['name'] = "{} {} {}".format(user.last_name, user.first_name, user.patronymic)
@@ -310,6 +314,7 @@ def create_treatment(request):
         context = {
             'clinics': Clinic.objects.all(),
             'doctors': Doctor.objects.all(),
+            'notifications_count': len(request.user.notification_set.all()),
             }
 
         return render(request, 'med/create_treatment.html', context=context)
@@ -336,6 +341,7 @@ def accept_treatment(request):
         print(treatments_for_accept)
         return render(request, 'med/accept_treatment.html', context={
             'treatments_for_accept': context_treatments,
+            'notifications_count': len(request.user.notification_set.all()),
         })
         
     else:

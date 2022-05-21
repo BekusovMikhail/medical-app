@@ -18,7 +18,10 @@ window.onload = () => {
     avatar.onchange = evt => {
         const [file] = avatar.files
         if (file) {
+            imgPreview.hidden = false
             imgPreview.src = URL.createObjectURL(file)
+        } else {
+            imgPreview.hidden = true
         }
     }
 

@@ -1,58 +1,74 @@
 {% extends "med/base.html" %}
-<head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-  
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.20.0/css/mdb.min.css" rel="stylesheet" />
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.0.0/mdb.min.js"></script>
-</head>
+{% load static %}
+
 
 {% block content %}
-    <div class="input-group">
-        <div class="form-outline">
-            <input id="search-focus" type="search" id="form1" class="form-control" />
-            <label class="form-label" for="form1">Search</label>
+
+<link rel="stylesheet" href="{% static 'med/css/search.css' %}">
+<script src="{% static 'med/js/search.js' %}"></script>
+
+<div class="main">
+   <div class="searchContainer">
+     <form action="" id="search">
+  <div class="input-group mb-3">
+    <input type="text" class="form-control" id='searchText' form='search' placeholder="Введите запрос" aria-label="searchText" aria-describedby="button-addon2">
+    <button class="btn btn-outline-primary" type="button" id="button-addon2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+  <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+</svg> Найти</button>
+  </div>
+     <div class="mb-3">
+     <div class="form-check form-check-inline">
+  <input class="form-check-input" form='search' type="radio" value='doctors' name="searchRadio" id="radioDoctors" checked>
+  <label class="form-check-label" for="radioDoctors">
+    Врачи
+  </label>
+</div>
+<div class="form-check form-check-inline">
+  <input class="form-check-input" form='search' type="radio" value='clinics' name="searchRadio" id="radioClinics">
+  <label class="form-check-label" for="radioClinics">
+    Клиники
+  </label>
+</div>
+   </div>
+   <div class="dropdown" id='specDropdown'>
+  <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+    Выбрать специализацию
+  </button>
+     <div class="dropdown-menu">
+        <span class="badge rounded-pill text-bg-secondary" id="selAll">Выбрать все</span>
+        <span class="badge rounded-pill text-bg-secondary" id="canAll" style="margin-bottom: 0.5rem;">Отменить все</span>
+         {% for spec in specs %}
+       <div class="form-check">
+          <input class="form-check-input" form='search' name='searchCheckbox' type="checkbox" value="{{ spec }}" checked>
+          <label class="form-check-label" for="flexCheckDefault">
+            {{ spec }}
+          </label>
         </div>
-        <button type="button" class="btn btn-primary">
-            <i class="fas fa-search"></i>
-        </button>
+         {% endfor %}
+   </div>
+  </div>
+  </form>
     </div>
-    <script>
-        const searchFocus = document.getElementById('search-focus');
-        const keys = [
-        { keyCode: 'AltLeft', isTriggered: false },
-        { keyCode: 'ControlLeft', isTriggered: false },
-        ];
+   <div class="content">
+    {% for clinic in clinics %}
+        <div class="clinic" data-name="{{ clinic.user.first_name }}">
+         <h1 class="display-6">{{ clinic.user.first_name }}</h1>
+         {% for doctor in clinic.doctor_set.all %}
+         <div class="doctor" data-name="{{ doctor.user.last_name }} {{ doctor.user.first_name }} {{ doctor.user.patronymic }}", data-spec="{{ doctor.specialization }}">
+           <img src="{{ doctor.user.avatar.url }}" alt="Doctor avatar" class="doctorPic">
+           <div class="docInfo">
+               <h4>{{ doctor.user.last_name }} {{ doctor.user.first_name }} {{ doctor.user.patronymic }}</h4>
+               <h5>{{ doctor.specialization }}</h5>
+               <p>{{ doctor.extra|linebreaks }}</p>
+           </div>
+           <button type="button" onclick="window.open('/account?id={{ doctor.user.id }}', '_blank').focus();" class="docProfileButt btn btn-outline-primary">Перейти <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right-circle" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/>
+        </svg></button>
+         </div>
+        {% endfor %}
+        </div>
+    {% endfor %}
 
-        window.addEventListener('keydown', (e) => {
-        keys.forEach((obj) => {
-            if (obj.keyCode === e.code) {
-            obj.isTriggered = true;
-            }
-        });
-
-        const shortcutTriggered = keys.filter((obj) => obj.isTriggered).length === keys.length;
-
-        if (shortcutTriggered) {
-            searchFocus.focus();
-        }
-        });
-
-        window.addEventListener('keyup', (e) => {
-        keys.forEach((obj) => {
-            if (obj.keyCode === e.code) {
-            obj.isTriggered = false;
-            }
-        });
-        });
-    </script>
-
-    <div class="btn-group">
-    
-        <input type="radio" class="btn-check" name="options" id="option2" autocomplete="off" />
-        <label class="btn btn-secondary" for="option2">Докторы</label>
-    
-        <input type="radio" class="btn-check" name="options" id="option3" autocomplete="off" />
-        <label class="btn btn-secondary" for="option3">Клиники</label>
-    </div>
+ </div>
+</div>
 {% endblock content %}

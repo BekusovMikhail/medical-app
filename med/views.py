@@ -405,6 +405,9 @@ def my_treatments(request):
     }
     return render(request, 'med/my_treatments.html', context)
 
-@login_required
+
+
 def search(request):
-    return render(request, 'med/search.html')
+    clinics = Clinic.objects.all()
+    specs = set(Doctor.objects.values_list('specialization', flat=True))
+    return render(request, 'med/search.html', context={'clinics': clinics, 'specs': specs})

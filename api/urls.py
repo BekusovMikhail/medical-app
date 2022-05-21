@@ -13,4 +13,5 @@ urlpatterns = [
     path('refreshTreatmentStatus', views.refreshTreatmentStatus, name='refreshTreatmentStatus'),
     path('addCurrProcedure', views.addCurrProcedure, name='addCurrProcedure'),
     path('closeTreatment', views.closeTreatment, name='closeTreatment'),
+    path('setDoctorRating', views.setDoctorRating, name='setDoctorRating'),
 ]

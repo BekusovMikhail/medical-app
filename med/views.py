@@ -349,13 +349,20 @@ def user_treatment_panel(request):
     if not ((request.user.is_doctor or request.user.is_patient) and 'id' in request.GET):
         return HttpResponseForbidden("Forbidden")
     
-    objs = request.user.patient.treatment_set.filter(id=request.GET['id'])
+    if request.user.is_doctor:
+        objs = request.user.doctor.treatment_set.filter(id=request.GET['id'])
+    if request.user.is_patient:
+        objs = request.user.patient.treatment_set.filter(id=request.GET['id'])
     if len(objs) == 0:
         return HttpResponseForbidden("Forbidden")
     treat = objs[0]
+    try:
+        rating = treat.rating.rating
+    except:
+        rating = None
     curr_procs = treat.currentprocedure_set.all()
     procs = Procedure.objects.all()
-    return render(request, 'med/user_treatment_panel.html', context={'treatment': treat, 'curr_procs': curr_procs, 'procs': procs, 'user':request.user})
+    return render(request, 'med/user_treatment_panel.html', context={'treatment': treat, 'curr_procs': curr_procs, 'procs': procs, 'user':request.user, 'rating': rating})
 
 @login_required
 def my_patients(request):

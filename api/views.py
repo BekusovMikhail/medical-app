@@ -272,3 +272,23 @@ def closeTreatment(request):
         return HttpResponse(status=200)
     else:
         return HttpResponseForbidden("Forbidden")
+
+
+@login_required
+@csrf_exempt
+def setDoctorRating(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        treat = request.user.patient.treatment_set.get(id=data['treat_id'])
+        try:
+            rating = treat.rating
+        except:
+            rating = None
+        if rating:
+            rating.rating = int(data['rate'])
+        else:
+            rating = Rating(rating=int(data['rate']), owner=treat.doctor.user, rater=treat.patient.user, treatment=treat)
+        rating.save()
+        return HttpResponse(status=200)
+    else:
+        return HttpResponseForbidden("Forbidden")

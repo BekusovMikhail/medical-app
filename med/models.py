@@ -120,4 +120,5 @@ class Rating(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, unique=False, related_name='owner')
     rater = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, unique=False, related_name='rater')
     creationDate = models.DateTimeField(auto_now_add=True)
+    treatment = models.OneToOneField(Treatment, on_delete = models.SET_NULL, null=True, blank=True)
 

@@ -1,0 +1,12 @@
+body {
+    height: 100vh;
+    background-color: ghostwhite;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.main-radio-role {
+    text-align: center;
+}

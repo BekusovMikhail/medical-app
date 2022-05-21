@@ -93,17 +93,67 @@ def registerUser(request):
         user.patronymic = request.POST['patronymic']
         user.email = request.POST['email']
         user.phone = request.POST['phone']
-        # user.username = request.POST['email']
         role = request.POST['role']
         user.set_password(request.POST['password'])
         user.save()
         if role == 'patient':
             user.is_patient = True
             reg_user = Patient(user=user)
+            reg_user.passport_number = request.POST['passport_number']
+            reg_user.passport_series = request.POST['passport_series']
+            reg_user.snils = request.POST['snils']
+            reg_user.age = request.POST['age']
+            reg_user.allergies = request.POST['allergies']
+            reg_user.diseases = request.POST['diseases']
+        
         elif role == 'doctor':
             user.is_doctor = True
             specialization = request.POST['specialization']
             reg_user = Doctor(specialization=specialization, user=user)
+            reg_user.passport_number = request.POST['passport_number']
+            reg_user.passport_series = request.POST['passport_series']
+            reg_user.license = request.POST['license']
+            reg_user.license_date = request.POST['license_date'] if request.POST["license_date"] != '' else None
+            exp = request.POST['experience']
+            if exp == '0':
+                exp = 'Меньше года'
+            reg_user.experience = exp
+            reg_user.save()
+
+            _ = [random.choice(list(Clinic.objects.all())) for i in range(random.randint(2, 5))]
+            for k in range(len(_)):
+                reg_user.clinics.add(_[k])
+            reg_user.save()
+
+            schedule = Schedule()
+
+            tmp = [request.POST['monday_begin'], request.POST['monday_end']]
+            schedule.monday = [tmp[0] if tmp[0] != '' else None, tmp[1] if tmp[1] != '' else None]
+            
+            tmp = [request.POST['tuesday_begin'], request.POST['tuesday_end']]
+            schedule.tuesday = [tmp[0] if tmp[0] != '' else None, tmp[1] if tmp[1] != '' else None]
+
+            tmp = [request.POST['wednesday_begin'], request.POST['wednesday_end']]
+            schedule.wednesday = [tmp[0] if tmp[0] != '' else None, tmp[1] if tmp[1] != '' else None]
+
+            tmp = [request.POST['thursday_begin'], request.POST['thursday_end']]
+            schedule.thursday = [tmp[0] if tmp[0] != '' else None, tmp[1] if tmp[1] != '' else None]
+
+            tmp = [request.POST['friday_begin'], request.POST['friday_end']]
+            schedule.friday = [tmp[0] if tmp[0] != '' else None, tmp[1] if tmp[1] != '' else None]
+
+            tmp = [request.POST['saturday_begin'], request.POST['saturday_end']]
+            schedule.saturday = [tmp[0] if tmp[0] != '' else None, tmp[1] if tmp[1] != '' else None]
+            
+            tmp = [request.POST['sunday_begin'], request.POST['sunday_end']]
+            schedule.sunday = [tmp[0] if tmp[0] != '' else None, tmp[1] if tmp[1] != '' else None]
+
+            schedule.doctor = reg_user
+            schedule.save()
+
+            reg_user.schedule = schedule
+            reg_user.save()
+
         elif role == 'clinic':
             user.is_clinic = True
             specialization = request.POST['specialization']

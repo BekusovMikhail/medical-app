@@ -13,6 +13,7 @@ import datetime
 import calendar as calendar_lib
 import plotly.express as px
 from django.db.models.functions import TruncMonth
+from numpy import mean
 
 def index(request):
     if request.method == "POST":
@@ -326,6 +327,12 @@ def create_treatment(request):
 
             treatment.save()
 
+            notif = Notification()
+            notif.sender = treatment.patient.user
+            notif.user = treatment.clinic.user
+            notif.text = 'Отправлена заявка на лечение'
+            notif.save()
+
             return HttpResponseRedirect("/dashboard")
 
         context = {
@@ -417,4 +424,5 @@ def my_treatments(request):
 def search(request):
     clinics = Clinic.objects.all()
     specs = set(Doctor.objects.values_list('specialization', flat=True))
+    
     return render(request, 'med/search.html', context={'clinics': clinics, 'specs': specs})

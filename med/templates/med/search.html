@@ -59,6 +59,11 @@
            <div class="docInfo">
                <h4>{{ doctor.user.last_name }} {{ doctor.user.first_name }} {{ doctor.user.patronymic }}</h4>
                <h5>{{ doctor.specialization }}</h5>
+               {% if doctor.getAverageRating %}
+               <h5>&#9733; {{ doctor.getAverageRating }}</h5>
+               {% else %}
+               <i>У доктора на данный момент нет оценок</i>
+               {% endif %}
                <p>{{ doctor.extra|linebreaks }}</p>
            </div>
            <button type="button" onclick="window.open('/account?id={{ doctor.user.id }}', '_blank').focus();" class="docProfileButt btn btn-outline-primary">Перейти <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right-circle" viewBox="0 0 16 16">

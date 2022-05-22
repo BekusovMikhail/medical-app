@@ -255,12 +255,6 @@ def refreshTreatmentStatus(request):
                     chat1.save()
                     chat2.save()
 
-                    notif = Notification()
-                    notif.sender = treatment.patient.user
-                    notif.user = treatment.clinic.user
-                    notif.text = 'Отправлена заявка на лечение'
-                    notif.save()
-
                     return HttpResponse(status=200)
                 elif data['status'] =="Decline":
                     

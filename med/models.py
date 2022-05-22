@@ -4,6 +4,7 @@ from django.db import models
 # from django.contrib.auth.models import User
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import ArrayField
+from numpy import mean
 
 
 class User(AbstractUser):
@@ -63,6 +64,15 @@ class Doctor(models.Model):
 
     class Meta:
         verbose_name = 'Доктор'
+
+    def getAverageRating(self):
+        _ = Rating.objects.filter(owner=self.user.id)
+        if _:
+            _ = [r.rating for r in _]
+            return '{:.1f}'.format(mean(_))
+            
+        else:
+            return None
 
 class Schedule(models.Model):
     doctor = models.OneToOneField(Doctor, on_delete = models.CASCADE)

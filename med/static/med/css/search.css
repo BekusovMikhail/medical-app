@@ -71,3 +71,51 @@
   background-color: #0d6efd;
   cursor: pointer;
 }
+
+
+
+
+.star {
+  color: transparent;
+  transition: color 0.2s ease-in-out;
+}
+
+
+.star-container {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: center;
+}
+
+label:hover ~ label .star,
+svg.star:hover,
+input[name="star"]:focus ~ label .star,
+input[name="star"]:checked ~ label .star {
+  color: #250dad;
+}
+
+input[name="star"]:checked + label .star {
+  animation: starred 0.5s;
+}
+
+input[name="star"]:checked + label {
+  animation: scaleup 1s;
+}
+
+@keyframes scaleup {
+  from {
+    transform: scale(1.2);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes starred {
+  from {
+    color: #0a0644;
+  }
+  to {
+    color: #17034d;
+  }
+}

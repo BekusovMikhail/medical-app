@@ -158,7 +158,10 @@ def registerUser(request):
             user.is_clinic = True
             specialization = request.POST['specialization']
             address = request.POST['address']
-            reg_user = Clinic(specialization=specialization, address=address, user=user)
+            link = request.POST['addresslink']
+            if link is None or link != '':
+                link = None
+            reg_user = Clinic(specialization=specialization, address=address, user=user, addressLink=link)
         user.save()
         reg_user.save()
         login(request, user)

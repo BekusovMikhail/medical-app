@@ -63,8 +63,6 @@ window.onload = function() {
       };
 }
 
-
-
 function checkRoleAddSpec(radioRole) {
     const radioValue = radioRole.value;
     document.getElementById("surnameField").hidden = false;
@@ -73,35 +71,33 @@ function checkRoleAddSpec(radioRole) {
     document.getElementById("patronymic").required = true;
     document.getElementById("extraCheck").hidden = false;
 
-    if (radioValue == "doctor"){
+    if (radioValue == "doctor") {
       document.getElementById('for_patient').hidden = true;
       document.getElementById('for_doctor').hidden = false;
       
-      let d = document.querySelector('#specializ');
+      document.querySelector('#specializ').hidden = false;
       document.querySelector('#specialization_id').required = true
-      d.hidden = false
-      d = document.querySelector('#address');
+      document.querySelector('#address').hidden = true;
       document.querySelector('#address_id').required = false
-      d.hidden = true
+      document.querySelector('#addresslink').hidden = true;
+
     }
-    else if (radioValue == "patient"){
-      console.log(1)
-      let d = document.querySelector('#specializ');
+    else if (radioValue == "patient") {
+      document.querySelector('#specializ').hidden = true;
       document.querySelector('#specialization_id').required = false
-      d.hidden = true
-      d = document.querySelector('#address');
+      document.querySelector('#address').hidden = true;
       document.querySelector('#address_id').required = false
-      d.hidden = true
+      document.querySelector('#addresslink').hidden = true;
 
       document.getElementById('for_patient').hidden = false;
       document.getElementById('for_doctor').hidden = true;
     } else {
-      let d = document.querySelector('#specializ');
+      document.querySelector('#specializ').hidden = false;
       document.querySelector('#specialization_id').required = true
-      d.hidden = false
-      d = document.querySelector('#address');
+      document.querySelector('#address').hidden = false;
       document.querySelector('#address_id').required = true
-      d.hidden = false
+      document.querySelector('#addresslink').hidden = false;
+
       document.getElementById("patronymicField").hidden = true;
       document.getElementById("surnameField").hidden = true;
       document.getElementById("surname").required = false;

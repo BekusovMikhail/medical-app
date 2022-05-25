@@ -38,7 +38,8 @@ class Patient(models.Model):
 
 class Clinic(models.Model):
     specialization = models.TextField(default="")
-    address = models.CharField(max_length=75, default="")
+    address = models.CharField(max_length=1000, default="")
+    addressLink = models.URLField(null=True, blank=True)
     extra = models.TextField(default="")
     user = models.OneToOneField(
         User,

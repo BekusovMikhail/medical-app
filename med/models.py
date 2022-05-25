@@ -49,8 +49,8 @@ class Clinic(models.Model):
 class Doctor(models.Model):
     specialization = models.TextField(default="")
     extra = models.TextField(default="")
-    passport_number = models.CharField(null=True, max_length=4, default=None)
-    passport_series = models.CharField(null=True, max_length=6, default=None)
+    # passport_number = models.CharField(null=True, max_length=4, default=None)
+    # passport_series = models.CharField(null=True, max_length=6, default=None)
     license = models.CharField(null=True, max_length=1000, default=None)
     license_date = models.DateTimeField(null=True, default=None)
     experience = models.CharField(null=True, default=None, max_length=100)

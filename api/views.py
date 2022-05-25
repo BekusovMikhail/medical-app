@@ -110,8 +110,8 @@ def registerUser(request):
             user.is_doctor = True
             specialization = request.POST['specialization']
             reg_user = Doctor(specialization=specialization, user=user)
-            reg_user.passport_number = request.POST['passport_number']
-            reg_user.passport_series = request.POST['passport_series']
+            # reg_user.passport_number = request.POST['passport_number']
+            # reg_user.passport_series = request.POST['passport_series']
             reg_user.license = request.POST['license']
             reg_user.license_date = request.POST['license_date'] if request.POST["license_date"] != '' else None
             exp = request.POST['experience']

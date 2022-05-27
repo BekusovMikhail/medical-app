@@ -27,6 +27,8 @@ def doctor_ratings_plot(user):
     l = plotly.graph_objects.Layout(
         xaxis={'fixedrange': True},
         yaxis={'fixedrange': True})
+    if not dates:
+        return None
     fig = px.line(x=dates, y=nums_avg,
                  labels={'x': 'Дата', 'y': 'Средняя оценка'}, title='Изменение среднего рейтинга со временем')
     fig.update_layout(l)

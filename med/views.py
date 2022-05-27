@@ -8,6 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
 from regex import E
+from . import plots
 from .models import *
 import datetime
 import calendar as calendar_lib
@@ -41,35 +42,28 @@ def reg(request):
 @login_required
 def dash(request):
     user = request.user
-    plots = []
+    plots_list = []
     if user.is_patient:
         role = 'Пациент'
+        plots_list.append(plots.patient_ratings_pie(user))
+        plots_list.append(plots.patient_procedures_plot(user))
+        plots_list.append(plots.patient_treatments_plot(user))
     elif user.is_doctor:
         role = 'Доктор'
-        today = datetime.date.today();
-        today = today.replace(day=1)
-        delta = datetime.timedelta(days=2)
-        counts = []
-        months = []
-        for i in range(6):
-            months.append(today)
-            counts.append(user.doctor.treatment_set.filter(creationDate__month=today.month).count())
-            today = today - delta
-            today = today.replace(day=1)
-        counts.reverse()
-        months.reverse()
-        # data = user.doctor.treatment_set.annotate(month=TruncMonth('creationDate')).values('month').annotate(c=Count('id')).order_by()
-        fig = px.bar(x=list(map(lambda x: x.strftime("%B %Y"), months)), y=counts, labels={'x': 'Месяц', 'y': 'Количество пациентов'})
-        code = fig.to_html(full_html=False)
-        plots.append(code)
-        for i in counts:
-            print(i)
+        #plots.populate_rating()
+        plots_list.append(plots.doctor_treatments_plot(user))
+        plots_list.append(plots.doctor_ratings_plot(user))
+        plots_list.append(plots.doctor_ratings_pie(user))
+        plots_list.append(plots.doctor_procedures_plot(user))
     elif user.is_clinic:
         role = 'Клиника'
+        plots_list.append(plots.clinic_ratings_plot(user))
+        plots_list.append(plots.clinic_treatment_plot(user))
+        plots_list.append(plots.clinic_procedures_plot(user))
     else:
         role = "Не определен"
 
-    return render(request, 'med/dashboard.html', context={'role': role, 'name': user.first_name, 'surname': user.last_name, 'plots': plots})
+    return render(request, 'med/dashboard.html', context={'role': role, 'name': user.first_name, 'surname': user.last_name, 'plots': plots_list})
 
 
 def logout_view(request):

@@ -1,0 +1,17 @@
+.content {
+    flex-grow: 2;
+    flex-shrink: 2;
+    display: grid;
+    padding: 3rem;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    grid-column-gap: 3rem;
+    grid-row-gap: 1rem;
+    overflow:auto;
+}
+
+.plot {
+    box-shadow: 6px 6px 12px 6px rgba(34, 60, 80, 0.05);
+    padding: 1rem;
+    border-radius: 2rem;
+}

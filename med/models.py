@@ -140,8 +140,8 @@ class CurrentProcedure(models.Model):
 
 class Rating(models.Model):
     rating = models.FloatField(default=2.0, unique=False)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, unique=False, related_name='owner')
-    rater = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, unique=False, related_name='rater')
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, unique=False, related_name="received_ratings")
+    rater = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, unique=False, related_name="sent_ratings")
     creationDate = models.DateTimeField(auto_now_add=True)
     treatment = models.OneToOneField(Treatment, on_delete = models.SET_NULL, null=True, blank=True)
 

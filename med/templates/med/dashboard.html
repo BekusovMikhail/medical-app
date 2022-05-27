@@ -1,11 +1,12 @@
 {% extends "med/base.html" %}
+{% load static %}
+
 {% block content %}
-    <div class="content" style="display:flex; flex-direction: column; align-items: center; gap: 2rem; margin-top: 5rem">
-        <img src="{{ request.user.avatar.url }}" alt="Аватар" style="width:15rem; height:15rem; border-radius: 50%;">
-        <h1>Hello, {{name}} {{ surname }} </h1>
-        <h2>{{role}}</h2>
-    </div>
+    <link rel="stylesheet" href="{% static 'med/css/dashboard.css' %}">
+
+    <div class="content">
     {% for plot in plots %}
-        {{ plot|safe }}
+        <div class="plot">{{ plot|safe }}</div>
     {% endfor %}
+    </div>
 {% endblock content %}

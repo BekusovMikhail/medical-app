@@ -63,8 +63,12 @@ class Command(BaseCommand):
             medic.schedule = schedule
             medic.save()
 
-            # Временно!!!
-            _ = [random.choice(list(Clinic.objects.all())) for i in range(random.randint(2, 5))]
+            medic.license = medics.iloc[i]["Номер медицинской лицензии"]
+            medic.license_date = medics.iloc[i]["Срок действия"]
+            medic.experience = medics.iloc[i]["Стаж"]
+
+            _ = list(map(int, medics.iloc[i]["Клиники"].strip().split(',')))
+            # _ = [random.choice(list(Clinic.objects.all())) for i in range(random.randint(2, 5))]
             for k in range(len(_)):
                 medic.clinics.add(_[k])
             medic.save()
@@ -93,13 +97,13 @@ class Command(BaseCommand):
 
     def parseProcedures(self, path=None):
         procedures = pandas.read_excel(path)
-        procedures = procedures[["Название процедуры", "Описание", "Пункты для выполнения перед процедурой", "Ответственный за процедуру врач"]]
+        procedures = procedures[["Название процедуры", "Описание", "Шаги для выполнения перед процедурой", "Ответственный за процедуру врач"]]
         print(procedures)
         for i in range(len(procedures)):
             procedure = Procedure()
             procedure.name = procedures.iloc[i]['Название процедуры']
             procedure.description = procedures.iloc[i]['Описание']
-            procedure.steps = procedures.iloc[i]['Пункты для выполнения перед процедурой']
+            procedure.steps = procedures.iloc[i]['Шаги для выполнения перед процедурой']
             procedure.doctor_spec = procedures.iloc[i]['Ответственный за процедуру врач']
             procedure.save()
             

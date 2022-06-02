@@ -7,16 +7,6 @@ import datetime
 import numpy as np
 
 
-def populate_rating():
-    for doctor in Doctor.objects.all():
-        for i in range(random.randint(100, 200)):
-            d = datetime.datetime.fromtimestamp(random.randint(1637509068, 1653147468))
-            r = Rating(rating=random.randint(1,5), rater=Patient.objects.all()[0].user, owner=doctor.user)
-            r.save()
-            r.creationDate = d
-            r.save()
-
-
 def doctor_ratings_plot(user):
     marks = user.received_ratings.order_by("creationDate")
     dates = marks.values_list('creationDate', flat=True)

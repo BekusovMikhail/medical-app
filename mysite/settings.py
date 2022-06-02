@@ -27,6 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+IP = '127.0.0.1'
+
 LOGIN_URL = '/'
 # Application definition
 

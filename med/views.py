@@ -1,6 +1,6 @@
 import json
 from tokenize import triple_quoted
-
+from django.conf import settings as sttgs
 from django.db.models import Count
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
@@ -50,7 +50,6 @@ def dash(request):
         plots_list.append(plots.patient_treatments_plot(user))
     elif user.is_doctor:
         role = 'Доктор'
-        # plots.populate_rating()
         plots_list.append(plots.doctor_treatments_plot(user))
         _ = plots.doctor_ratings_plot(user)
         if _:
@@ -95,7 +94,7 @@ def chat(request):
     chat = chats1.intersection(chats2).first()
     if chat:
         messages = chat.message_set.all()
-        return render(request, 'med/chat.html', {"user1": user1, "user2": user2, "chat": chat, "messages": messages, "ip": "127.0.0.1"})
+        return render(request, 'med/chat.html', {"user1": user1, "user2": user2, "chat": chat, "messages": messages, "ip": sttgs.IP})
     else:
         return HttpResponseRedirect("/chats")
 

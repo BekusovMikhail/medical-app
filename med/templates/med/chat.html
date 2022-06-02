@@ -55,10 +55,10 @@
 				};
 
       	socket.onmessage = function(event) {
-				  let incomingMessage = event.data;
-				  let block = '<div class="list-group-item" style="border: none; text-align: left;">{{user2.first_name}} {{user2.last_name}}: '+ incomingMessage +'</div>'
-          cardBodyChat.insertAdjacentHTML("beforeend", block);
-	        cardBodyChat.scrollTop = cardBodyChat.scrollHeight;
+            let incomingMessage = event.data;
+            let block = '<div class="list-group-item" style="border: none; text-align: left;">{{user2.first_name}} {{user2.last_name}}: '+ incomingMessage +'</div>'
+            cardBodyChat.insertAdjacentHTML("beforeend", block);
+            cardBodyChat.scrollTop = cardBodyChat.scrollHeight;
 		};
   		</script>
     </div>

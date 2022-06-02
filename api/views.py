@@ -12,13 +12,13 @@ import smtplib, ssl
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import datetime
+from django.conf import settings as sttgs
 
-
-server = socketServer()
+server = socketServer(sttgs.IP)
 port = 465  # For SSL
-smtp_server = "smtp.gmail.com"
-sender_email = "medapp322@gmail.com"
-password = "Qwerty2312"
+smtp_server = "smtp.mail.ru"
+sender_email = "medapp@internet.ru"
+password = "Sjj5a1Rxr7bL8S5Wq3eH"
 
 
 @login_required
@@ -59,27 +59,19 @@ def sendVerificationCode(request):
     if request.method == "POST" and request.content_type == 'application/json':
         data = json.loads(request.body)
         email = data['email']
-        code = "".join(random.sample([str(i) for i in range(10)], 6))
-        context = ssl.create_default_context()
-        with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
-            server.login(sender_email, password)
-            msg = MIMEMultipart("alternative")
-            msg["Subject"] = u'MedApp Verification code'
-            msg["From"] = u"MedApp"
-            part1 = MIMEText(u'Your verification code: {}'.format(code),
-                             "plain", "utf-8")
-            msg.attach(part1)
-            server.sendmail(sender_email, email, msg.as_string())
+        code = "".join(random.choices([str(i) for i in range(10)], k=6))
+        try:
+            context = ssl.create_default_context()
+            with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
+                server.login(sender_email, password)
+                msg = MIMEText(u'Your verification code: {}'.format(code))
+                msg["Subject"] = u'MedApp Verification code'
+                msg["From"] = sender_email
+                msg['To'] = email
+                server.sendmail(sender_email, email, msg.as_string())
+        except:
+            print('email error')
         return HttpResponse(json.dumps({'code': code}), content_type="application/json")
-
-        # mes = Message()
-        # mes.chat = Chat.objects.get(id=request.POST['chatId'])
-        # mes.text = request.POST['text']
-        # mes.sender = request.POST['sender']
-        # mes.save()
-        # target = mes.chat.users.exclude(id=mes.sender).first()
-        # server.send_message(target.id, mes.text)
-        # return HttpResponse(status=201)
     else:
         return HttpResponseForbidden("Forbidden")
 

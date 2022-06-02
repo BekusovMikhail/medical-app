@@ -5,10 +5,11 @@ from websocket_server import WebsocketServer
 
 class socketServer:
 
-    def __init__(self, port=8081):
+    def __init__(self, host, port=8081):
         self.port = port
+        self.host = host
         self.clients = []
-        self.server = WebsocketServer(host='127.0.0.1', port=self.port, loglevel=logging.DEBUG)
+        self.server = WebsocketServer(host=self.host, port=self.port)
         self.server.set_fn_message_received(self.new_message)
         self.server.set_fn_new_client(self.new_client)
         self.server.set_fn_client_left(self.client_left)
@@ -19,12 +20,11 @@ class socketServer:
         for i in range(len(self.clients)):
             if self.clients[i]['client'] == client:
                 self.clients.pop(i)
-                break # fix
+                break
 
 
     def new_client(self, client, server):
         return
-        # print('new client:', client['id'])
 
 
     def new_message(self, client, server, message):

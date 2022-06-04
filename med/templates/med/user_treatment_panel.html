@@ -130,6 +130,40 @@
   {% endif %}
    
   </div>
+  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Результаты процедуры</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="res" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3" >
+              <div class="main-radio-role">
+                <div class="mb-3" id="textResurtField">
+                  <label for="result" class="form-label">Результаты (текст)</label>
+                  <textarea type="text" name="resultText" form="res" class="form-control" id="resultTextField" placeholder="Результаты" rows="5"></textarea>
+                  
+                </div>
+                <div class="mb-3" id="imageResurtField">
+                  <label for="result" class="form-label">Результаты (фото)</label>
+                  <input form="res" class="form-control" type="file" id="resultImage" accept="image/*" name="resultImage">
+                  <img id="imgPreview" src="" alt="Нет прикрепленных изображений" />
+                </div>
+              </div>
+          </div>
+          <input form="res" class="form-control" type="text" name="procId" id="procId" hidden value=""></input>
+          <input type='submit' id="saveResultButton" form="res" class="btn btn-primary" style="width:100%" value='Сохранить'></input>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+        </div>
+      </div>
+    </div>
+  </div>
    <div class="sep"></div>
    <div class="main">
      <div class="card">
@@ -148,49 +182,10 @@
                   <p>{{ proc.procedure.steps }}</p>
                   <p>{{ proc.time }}</p>
                   {% if request.user.is_doctor %}
-                  <button onclick="addResultButton(this)" data-procResImage="{{ proc.resultImage }}" data-procResText="{{ proc.resultText }}" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" id="addResultButton">
-                    Добавить результаты процедуры
+                  <button onclick="addResultButton(this)" data-id="{{ proc.id }}" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" id="addResultButton">
+                    Результаты процедуры
                   </button>
                   {% endif %}
-                  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h5 class="modal-title" id="staticBackdropLabel">Результаты процедуры</h5>
-                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                          <form id="res" method="post" enctype="multipart/form-data">
-                            {% csrf_token %}
-                            <div class="mb-3" >
-                              <div class="main-radio-role">
-                                <div class="mb-3" id="textResurtField">
-                                  <label for="result" class="form-label">Результаты (текст)</label>
-                                  <textarea type="text" name="resultText" form="res" class="form-control" id="resultTextField" placeholder="Результаты" rows="5"></textarea>
-                                  
-                                </div>
-                                <div class="mb-3" id="imageResurtField">
-                                  <label for="result" class="form-label">Результаты (фото)</label>
-                                  <input form="res" class="form-control" type="file" id="resultImage" accept="image/*" name="resultImage">
-                                  {% if proc.resultImage %}
-                                  <img id="imgPreview" src="{{ proc.resultImage.url }}" alt="your image" />
-                                  {% else %}
-                                  <img id="imgPreview" src="#" alt="your image" />
-                                  {% endif %}
-                                </div>
-                                <input form="res" class="form-control" type="text" id="formFile" name="procId" hidden value="{{ proc.id }}"></input>
-                              </div>
-                          </div>
-                          
-                          <input type='submit' form="res" class="btn btn-primary" style="width:100%" value='Сохранить'></input>
-                          </form>
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                 </div>
             {% endfor %}
           </div>

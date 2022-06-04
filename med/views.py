@@ -372,7 +372,7 @@ def accept_treatment(request):
 def user_treatment_panel(request):
     if request.method == "POST":
 
-        procId = request.POST.get('procId', None)
+        procId = request.POST['procId']
         cur_proc = CurrentProcedure.objects.filter(id=procId)[0]
 
         resultText = request.POST.get('resultText', None)
@@ -382,8 +382,6 @@ def user_treatment_panel(request):
         
         cur_proc.resultText = resultText
         cur_proc.save()
-
-
         
 
     if not ((request.user.is_doctor or request.user.is_patient) and 'id' in request.GET):
@@ -400,7 +398,7 @@ def user_treatment_panel(request):
         rating = treat.rating.rating
     except:
         rating = None
-    curr_procs = treat.currentprocedure_set.all()
+    curr_procs = treat.currentprocedure_set.all().order_by('id')
     procs = Procedure.objects.all()
     return render(request, 'med/user_treatment_panel.html', context={'treatment': treat, 'curr_procs': curr_procs, 'procs': procs, 'user':request.user, 'rating': rating})
 

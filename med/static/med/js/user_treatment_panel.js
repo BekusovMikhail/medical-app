@@ -12,11 +12,31 @@ window.onload = () => {
     
 }
 
-function addResultButton(but) {
+async function addResultButton(but) {
+    let id = but.getAttribute('data-id');
+    let response = await fetch('/api/get_current_procedure_info', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({'proc_id': id})
+    });
 
-    imgPreview.src = but.getAttribute('data-procResImage');
-    resultTextField.innerText = but.getAttribute('data-procResText');
-    console.log(but.getAttribute('data-procResText'));
+    if (response.ok) {
+        data = await response.json()
+        if (data['text'] != null) {
+            resultTextField.innerText = data['text'];
+        } else {
+            resultTextField.innerText = null;
+        }
+        if (data['img'] != null) {
+            imgPreview.src = data['img'];
+        } else {
+            imgPreview.src = "";
+        }
+    } 
+
+    procId.value = id;
 }
 
 function selectChanged(event){

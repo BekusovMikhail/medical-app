@@ -331,3 +331,18 @@ def setDoctorRating(request):
         return HttpResponse(status=200)
     else:
         return HttpResponseForbidden("Forbidden")
+
+@login_required
+@csrf_exempt
+def getCurrentProcedureInfo(request):
+    if request.method == "POST" and request.user.is_doctor:
+        id = int(json.loads(request.body)['proc_id'])
+        cur_proc = CurrentProcedure.objects.get(id=id)
+        info = json.dumps({
+            'text': cur_proc.resultText,
+            'img': cur_proc.resultImage.url if cur_proc.resultImage else ''
+        })
+        return HttpResponse(info, content_type="application/json")
+    else:
+        return HttpResponseForbidden("Forbidden")
+

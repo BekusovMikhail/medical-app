@@ -14,4 +14,5 @@ urlpatterns = [
     path('addCurrProcedure', views.addCurrProcedure, name='addCurrProcedure'),
     path('closeTreatment', views.closeTreatment, name='closeTreatment'),
     path('setDoctorRating', views.setDoctorRating, name='setDoctorRating'),
+    path('get_current_procedure_info', views.getCurrentProcedureInfo, name='get_current_procedure_info')
 ]

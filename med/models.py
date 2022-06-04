@@ -137,6 +137,8 @@ class CurrentProcedure(models.Model):
     time = models.DateTimeField(blank=True, null=True)
     treatment = models.ForeignKey(Treatment, on_delete = models.CASCADE)
     creationDate = models.DateTimeField(auto_now_add=True, blank=True)
+    resultText = models.TextField(default=None, null=True)
+    resultImage = models.ImageField(upload_to='procResults/', default=None, null=True)
 
 class Rating(models.Model):
     rating = models.FloatField(default=2.0, unique=False)

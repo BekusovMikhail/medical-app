@@ -1,4 +1,5 @@
 import json
+import os
 from tokenize import triple_quoted
 from django.conf import settings as sttgs
 from django.db.models import Count
@@ -369,6 +370,21 @@ def accept_treatment(request):
 
 @login_required
 def user_treatment_panel(request):
+    if request.method == "POST":
+
+        procId = request.POST.get('procId', None)
+        cur_proc = CurrentProcedure.objects.filter(id=procId)[0]
+
+        resultText = request.POST.get('resultText', None)
+        if 'resultImage' in request.FILES:
+            resultImage = request.FILES['resultImage']
+            cur_proc.resultImage = resultImage      
+        
+        cur_proc.resultText = resultText
+        cur_proc.save()
+
+
+        
 
     if not ((request.user.is_doctor or request.user.is_patient) and 'id' in request.GET):
         return HttpResponseForbidden("Forbidden")

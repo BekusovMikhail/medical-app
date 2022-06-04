@@ -2,6 +2,21 @@ window.onload = () => {
     select_proc.onchange = selectChanged
     createProcButt.onclick = createTreatClicked
     closeTreatmentButt.onclick = closeTreatment
+
+    resultImage.onchange = evt => {
+        const [file] = resultImage.files
+        if (file) {
+            imgPreview.src = URL.createObjectURL(file)
+        }
+    }
+    
+}
+
+function addResultButton(but) {
+
+    imgPreview.src = but.getAttribute('data-procResImage');
+    resultTextField.innerText = but.getAttribute('data-procResText');
+    console.log(but.getAttribute('data-procResText'));
 }
 
 function selectChanged(event){

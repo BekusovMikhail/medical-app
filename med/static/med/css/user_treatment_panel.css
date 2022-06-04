@@ -78,12 +78,12 @@
 }
 
 
+#imgPreview {
+  width:100%;
+  max-height: 20rem;
 
-
-
-
-
-
+  margin-top: 1rem;
+}
 
 
 label {

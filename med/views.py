@@ -216,29 +216,6 @@ def account(request):
         usr = usr.patient
 
     error = None
-    # if request.method == "POST":
-    #     img = request.FILES.get('img', None)
-    #     snp = request.POST['fullname']
-    #     descr = request.POST.get('description', 'Нет дополнительной информации')
-    #     new_phone = request.POST['newphone']
-    #     new_email = request.POST['newemail']
-    #
-    #     usr.user.avatar = img
-    #
-    #     newname = snp.split()
-    #     usr.user.first_name = newname[1]
-    #     usr.user.last_name = newname[0]
-    #     usr.user.patronymic = newname[2]
-    #
-    #     usr.extra = descr
-    #     usr.user.phone = new_phone
-    #
-    #     try:
-    #         usr.user.email = new_email
-    #         usr.save()
-    #         usr.user.save()
-    #     except:
-    #         error = 'Пользователь с такой почтой уже существует'
     if usr.user.is_clinic:
         fullname = usr.user.first_name
     else:

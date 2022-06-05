@@ -22,7 +22,7 @@
     <div class="card-header">Информация о докторе</div>
     {% endif %}
     <div class="card-body">
-      <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png" alt="" id="userImg">
+      <img src="/media/avatars/default_avatar.jpg" alt="" id="userImg">
       {% if user.is_doctor %}
       <div class="row">{{ treatment.patient.user.last_name }} {{ treatment.patient.user.first_name }} {{ treatment.patient.user.patronymic }}</div>
       {% elif user.is_patient %}
@@ -155,7 +155,9 @@
               </div>
           </div>
           <input form="res" class="form-control" type="text" name="procId" id="procId" hidden value=""></input>
+          {% if request.user.is_doctor %}
           <input type='submit' id="saveResultButton" form="res" class="btn btn-primary" style="width:100%" value='Сохранить'></input>
+          {% endif %}
           </form>
         </div>
         <div class="modal-footer">
@@ -166,7 +168,11 @@
   </div>
    <div class="sep"></div>
    <div class="main">
+    {% if request.user.is_doctor %}
      <div class="card">
+     {% else %}
+     <div class="card" style="height:100%;">
+     {% endif %}
      <div class="card-header">
        История процедур
      </div>
@@ -181,11 +187,9 @@
                   <p>{{ proc.procedure.description }}</p>
                   <p>{{ proc.procedure.steps }}</p>
                   <p>{{ proc.time }}</p>
-                  {% if request.user.is_doctor %}
                   <button onclick="addResultButton(this)" data-id="{{ proc.id }}" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" id="addResultButton">
                     Результаты процедуры
                   </button>
-                  {% endif %}
                 </div>
             {% endfor %}
           </div>
@@ -237,4 +241,3 @@
  </div>
 
 {% endblock content %}
-

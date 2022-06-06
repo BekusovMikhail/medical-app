@@ -189,22 +189,29 @@ def account(request):
         user = request.user
         data = []
         data.append({'name': 'first_name', 'type': 'text', 'label': 'Имя', 'value': request.user.first_name})
-        data.append({'name': 'last_name', 'type': 'text', 'label': 'Фамилия', 'value': request.user.last_name})
-        data.append({'name': 'patronymic', 'type': 'text', 'label': 'Отчество', 'value': request.user.patronymic})
+        if request.user.is_clinic is False:
+            data.append({'name': 'last_name', 'type': 'text', 'label': 'Фамилия', 'value': request.user.last_name})
+            data.append({'name': 'patronymic', 'type': 'text', 'label': 'Отчество', 'value': request.user.patronymic})
         data.append({'name': 'phone', 'type': 'tel', 'label': 'Телефон', 'value': request.user.phone})
         if request.user.is_patient:
-            pass
+            data.append({'name': 'passport_number', 'type': 'text', 'label': 'Номер паспорта', 'value': request.user.patient.passport_number})
+            data.append({'name': 'passport_series', 'type': 'text', 'label': 'Серия паспорта', 'value': request.user.patient.passport_series})
+            data.append({'name': 'snils', 'type': 'text', 'label': 'СНИЛС', 'value': request.user.patient.snils})
+            data.append({'name': 'age', 'type': 'number', 'label': 'Возраст', 'value': request.user.patient.age})
+            data.append({'name': 'allergies', 'type': 'textarea', 'label': 'Аллергические реакции', 'value': request.user.patient.allergies})
+            data.append({'name': 'diseases', 'type': 'textarea', 'label': 'Хронические заболевания', 'value': request.user.patient.diseases})
+            data.append({'name': 'extra', 'type': 'text', 'label': 'Дополнительная информация', 'value': request.user.patient.extra})
         elif request.user.is_clinic:
-            data.append({'name': 'specialization', 'type': 'text', 'label': 'Специализация',
-                         'value': request.user.clinic.specialization})
+            data.append({'name': 'specialization', 'type': 'text', 'label': 'Специализация', 'value': request.user.clinic.specialization})
             data.append({'name': 'address', 'type': 'text', 'label': 'Адрес', 'value': request.user.clinic.address})
-            data.append(
-                {'name': 'description', 'type': 'textarea', 'label': 'Описание', 'value': request.user.clinic.extra})
+            data.append({'name': 'description', 'type': 'textarea', 'label': 'Описание', 'value': request.user.clinic.extra})
+            data.append({'name': 'addressLink', 'type': 'url', 'label': 'Ссылка на местоположение', 'value': request.user.clinic.addressLink})
         elif request.user.is_doctor:
-            data.append({'name': 'specialization', 'type': 'text', 'label': 'Специализация',
-                         'value': request.user.doctor.specialization})
-            data.append(
-                {'name': 'description', 'type': 'textarea', 'label': 'Описание', 'value': request.user.doctor.extra})
+            data.append({'name': 'specialization', 'type': 'text', 'label': 'Специализация', 'value': request.user.doctor.specialization})
+            data.append({'name': 'description', 'type': 'textarea', 'label': 'Описание', 'value': request.user.doctor.extra})
+            data.append({'name': 'license', 'type': 'text', 'label': 'Номер медицинской лицензии', 'value': request.user.doctor.license})
+            data.append({'name': 'license_date', 'type': 'datetime-local', 'label': f'Дата окончания действия лицензии {request.user.doctor.license_date}', 'value': ''})
+            data.append({'name': 'experience', 'type': 'number', 'label': 'Стаж', 'value': request.user.doctor.experience})
     else:
         return HttpResponseForbidden("Forbidden")
     usr = user

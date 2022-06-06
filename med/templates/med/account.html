@@ -59,16 +59,26 @@
                                 <p>Почта</p>
                             </div>
                         </div>
+                        {% if usr.user.is_clinic %}
                         <div class="actionsC">
                             <div class="actionBtn">
-                                <span class="fa-stack fa-2x" data-bs-toggle="popover" data-bs-placement="bottom" title="Адрес" data-bs-content=" ">
+                                <span class="fa-stack fa-2x" data-bs-toggle="popover" data-bs-placement="bottom" title="Адрес" data-bs-content="{{ usr.address }}">
                                     <i class="fa-solid fa-circle fa-stack-2x" style="color: #0d6efd;"></i>
                                     <i class="fa-solid fa-location-dot fa-2xs fa-stack-1x fa-inverse"></i>
                                 </span>
                                 <p>Адрес</p>
                             </div>
                         </div>
+                        
+                        {% endif %}
                       </div>
+                      {% if usr.user.is_clinic and usr.addressLink %}
+                        <a type="button" id="findMapBtn" class="btn btn-primary" href="{{ usr.addressLink }}" target="_blank">Найти на карте</a>
+                      {% endif %}
+
+                      {% if usr.user.is_doctor and usr.getAverageRating %}
+                        <h4>{{usr.getAverageRating}}<i class="fa-solid fa-star fa-lg" style="color: gold;"></i></h4>
+                      {% endif %}
                         <!-- 
                         <a href="#" style="margin-top: 1rem;" class="btn btn-primary">Записаться на прием</a>
                          -->
@@ -145,42 +155,6 @@
             {% endif %}
             <div class="tab-pane" id="settingsPage">
                 <div class="card text-center" style="margin-bottom: 0">
-{#                    <form id='form' method="POST" enctype="multipart/form-data">#}
-{#                    {% csrf_token %}#}
-{#                    {% if usr.ava %}#}
-{#                    <img src="{{ usr.ava.url }}" data-original="{% static 'med/images/blank.png' %}" id="newavatar" class="card-img-top" alt="error">#}
-{#                    {% else %}#}
-{#                    <img src="{% static 'med/images/blank.png' %}" data-original="{% static 'med/images/blank.png' %}" id="newavatar" class="card-img-top" alt="error">#}
-{#                    {% endif %}#}
-{#                    <div class="mb-3">#}
-{#                        <label for="formFile" class="form-label">Загрузите изображение для аватара</label>#}
-{#                        <div id="textfield-button">#}
-{#                            <input onchange="avatarAppears()" class="form-control" type="file" id="formFile" accept="image/*" name="img">#}
-{#                            <button id="close-textfield-button" type="button" class="btn-close" onclick="clearFileUploader()" aria-label="Close"></button>#}
-{#                        </div>#}
-{#                    </div>#}
-{#                    <div class="card-body" id="inside">#}
-{#                      <div class="mb-3">#}
-{#                        <input type="text" value="{{ fullname }}" class="form-control" name="fullname"></textarea>#}
-{#                      </div>#}
-{#                      {% if not usr.user.is_patient %}#}
-{#                      <div class="mb-3">#}
-{#                        <textarea rows=10 type="text" class="form-control" placeholder="Введите информацию о себе" name="description">{{ usr.extra }}</textarea>#}
-{#                      </div>#}
-{#                      {% endif %}#}
-{#                      <div class="mb-3">#}
-{#                        <label for="phoneInputField" class="form-label">Телефон</label>#}
-{#                        <input id="phoneInputField" value="{{ usr.user.phone }}" type="tel" class="form-control" name="newphone"></textarea>#}
-{#                      </div>#}
-{#                      <div class="mb-3">#}
-{#                        <label for="emailInputField" class="form-label">Электронная почта</label>#}
-{#                        <input id="emailInputField" value="{{ usr.user.email }}" type="email" class="form-control" name="newemail"></textarea>#}
-{#                      </div>                #}
-{#                    </div>#}
-{#                    <div class="mb-3">#}
-{#                        <input type="submit" id="submitButton" class="btn btn-primary" style="width:100%" value='Сохранить изменения'></input>#}
-{#                    </div>#}
-{#                    </form>#}
                     {% if usr.user.avatar %}
                     <img src="{{ usr.user.avatar.url }}" id='userImg' alt="Аватар">
                     {% endif %}
@@ -197,6 +171,12 @@
                                     <input class="form-control" name="{{ field.name }}" type="text" value="{{ field.value }}" form="settings" id="{{ field.name }}" disabled>
                                 {% elif field.type == 'tel' %}
                                     <input class="form-control" type="tel" pattern="^(\+7|7|8)?[\s\-]?\(?[489][0-9]{2}\)?[\s\-]?[0-9]{3}[\s\-]?[0-9]{2}[\s\-]?[0-9]{2}$" name="{{ field.name }}" value="{{ field.value }}" form="settings" id="{{ field.name }}" disabled>
+                                {% elif field.type == 'url' %}
+                                    <input class="form-control" type="url" value="{{ field.value }}" form="settings" id="{{ field.name }}" name="{{ field.name }}" disabled>
+                                {% elif field.type == 'datetime-local' %}
+                                    <input class="form-control" type="datetime-local" value="{{ field.value }}" form="settings" id="{{ field.name }}" name="{{ field.name }}" disabled>
+                                {% elif field.type == 'number' %}
+                                    <input class="form-control" type="number" min="1" value="{{ field.value }}" form="settings" id="{{ field.name }}" name="{{ field.name }}" disabled>
                                 {% elif field.type == 'textarea' %}
                                     <textarea rows="3" class="form-control" name="{{ field.name }}" form="settings" id="{{ field.name }}" disabled>{{ field.value }}</textarea>
                                 {% endif %}

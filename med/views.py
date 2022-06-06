@@ -297,6 +297,7 @@ def create_treatment(request):
             treatment.patient = Patient.objects.get(pk=request.user.id)
             treatment.complaint = complaint
             treatment.symptoms = symptoms
+            treatment.status = -1
 
             treatment.save()
 

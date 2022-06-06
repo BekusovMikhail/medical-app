@@ -252,9 +252,9 @@ def refreshTreatmentStatus(request):
 
                     return HttpResponse(status=200)
                 elif data['status'] =="Decline":
-                    
-                    treatment.delete()
-                    return HttpResponse(status=200)
+                    # treatment.delete()
+                    # return HttpResponse(status=200)
+                    return HttpResponseForbidden("Forbidden")
             else:
                 return HttpResponseForbidden("Forbidden")
         else:

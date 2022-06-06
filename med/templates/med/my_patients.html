@@ -55,14 +55,16 @@
     <h3 style="margin-top:2rem;">Пациенты отсутствуют</h3>
 {% endif %}
 {% for treatment in treats %}
-  <div class='request' id="{{ treatment.id }}">
-      <div class='request-info'>
-        <p>Пациент: {{ treatment.patient.user.last_name }} {{ treatment.patient.user.first_name }} {{ treatment.patient.user.patronymic }}</p>
-        <p>Жалоба: {{ treatment.complaint }}</p>
-        <p>Симптомы: {{ treatment.symptoms }}</p>
-        <button type="button" class="btn btn-primary" data-treat_id="{{ treatment.id }}" id='buttConfirm'>Детали</button>
-      </div>  
-  </div>
+    {% if treatment.status > -1 %}
+    <div class='request' id="{{ treatment.id }}">
+        <div class='request-info'>
+            <p>Пациент: {{ treatment.patient.user.last_name }} {{ treatment.patient.user.first_name }} {{ treatment.patient.user.patronymic }}</p>
+            <p>Жалоба: {{ treatment.complaint }}</p>
+            <p>Симптомы: {{ treatment.symptoms }}</p>
+            <button type="button" class="btn btn-primary" data-treat_id="{{ treatment.id }}" id='buttConfirm'>Детали</button>
+        </div>  
+    </div>
+    {% endif %}
 {% endfor %}
 </div>
 

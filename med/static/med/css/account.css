@@ -64,7 +64,11 @@ img {
 }
 
 .actionsC {
-    width: 33.33%;
+    width: 100%;
+}
+
+span {
+    cursor: pointer;
 }
 
 .day {
@@ -109,4 +113,8 @@ input {
     flex-direction: row;
     column-gap: 1rem;
     align-self: end;
+}
+
+#findMapBtn {
+    margin-top: 1rem;
 }

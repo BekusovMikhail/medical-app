@@ -151,7 +151,7 @@ def registerUser(request):
             specialization = request.POST['specialization']
             address = request.POST['address']
             link = request.POST['addresslink']
-            if link is None or link != '':
+            if link is None or link == '':
                 link = None
             reg_user = Clinic(specialization=specialization, address=address, user=user, addressLink=link)
         user.save()
@@ -197,8 +197,9 @@ def changeSettings(request):
     if request.method == "POST":
         user = request.user
         user.first_name = request.POST['first_name']
-        user.last_name = request.POST['last_name']
-        user.patronymic = request.POST['patronymic']
+        if user.is_clinic is False:
+            user.last_name = request.POST['last_name']
+            user.patronymic = request.POST['patronymic']
         user.phone = request.POST['phone']
         if 'avatar' in request.FILES:
             files = os.listdir(r"./med/media/avatars")
@@ -211,15 +212,27 @@ def changeSettings(request):
             pic.name = "{}avatar".format(user.id) + pic.name[dot:]
             user.avatar = pic
         if user.is_patient:
-            pass
+            user.patient.passport_number = request.POST['passport_number']
+            user.patient.passport_series = request.POST['passport_series']
+            user.patient.snils = request.POST['snils']
+            user.patient.age = request.POST['age']
+            user.patient.allergies = request.POST['allergies']
+            user.patient.diseases = request.POST['diseases']
+            user.patient.extra = request.POST['extra']
+            user.patient.save()
         elif user.is_clinic:
             user.clinic.specialization = request.POST['specialization']
             user.clinic.address = request.POST['address']
             user.clinic.extra = request.POST['description']
+            user.clinic.addressLink = request.POST['addressLink']
             user.clinic.save()
         elif user.is_doctor:
             user.doctor.specialization = request.POST['specialization']
             user.doctor.extra = request.POST['description']
+            user.doctor.license = request.POST['license']
+            if request.POST['license_date'] is not None and request.POST['license_date'] != '':
+                user.doctor.license_date = request.POST['license_date']
+            user.doctor.experience = request.POST['experience']
             user.doctor.save()
 
         user.save()

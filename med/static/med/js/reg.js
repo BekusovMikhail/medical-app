@@ -5,8 +5,6 @@ window.onload = function() {
         if (!reg.reportValidity()){
           return
         }
-        card1.hidden = 'hidden'
-        card2.removeAttribute('hidden')
         let response = await fetch('/api/sendcode', {
           method: 'POST', 
           headers: {
@@ -18,6 +16,12 @@ window.onload = function() {
         if (response.status == 200) {
           result = await response.json()
           code = result['code']
+          if (code == '') {
+            window.location.replace("registration");
+            window.alert('Пользователь с такой почтой уже зарегистрирован')
+          }
+          card1.hidden = 'hidden'
+          card2.removeAttribute('hidden')
         } else {
           window.location.replace("dashboard");
         }

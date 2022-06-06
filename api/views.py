@@ -59,6 +59,9 @@ def sendVerificationCode(request):
     if request.method == "POST" and request.content_type == 'application/json':
         data = json.loads(request.body)
         email = data['email']
+        if len(User.objects.filter(email=email)) > 0:
+            return HttpResponse(json.dumps({'code': ''}), content_type="application/json")
+
         code = "".join(random.choices([str(i) for i in range(10)], k=6))
         try:
             context = ssl.create_default_context()

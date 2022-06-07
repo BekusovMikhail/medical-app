@@ -3,7 +3,11 @@
   {% if notifications.count > 0 %}
     {% for notif in notifications %}
       <div class="list-item" id="{{notif.id}}" style="display: flex; direction: row;">
+        {% if notif.sender %}
         <a style="align-self: flex-start;" class="list-group-item list-group-item-action">{{notif.sender.first_name}} {{notif.sender.last_name}} : {{notif.text}}</a>
+        {% else %}
+        <a style="align-self: flex-start;" class="list-group-item list-group-item-action">{{notif.event.type}} {{notif.event.name}} : {{notif.text}}</a>
+        {% endif %}
         <button style="align-self: flex-end; margin-right: 5px; align-self:center; background-color: red; color: white; border: 3px; height: 40px; width: 40px;" type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>

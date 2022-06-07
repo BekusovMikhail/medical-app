@@ -16,9 +16,9 @@ from django.conf import settings as sttgs
 
 server = socketServer(sttgs.IP)
 port = 465  # For SSL
-smtp_server = "smtp.mail.ru"
-sender_email = "medapp@internet.ru"
-password = "Sjj5a1Rxr7bL8S5Wq3eH"
+smtp_server = "smtp.yandex.ru"
+sender_email = "med.application@yandex.ru"
+password = "9*#8r@k7MR.!+jP"
 
 
 @login_required

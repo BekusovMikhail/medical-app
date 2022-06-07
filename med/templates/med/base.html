@@ -81,9 +81,9 @@
         <li class="nav-item">
           <a class="navbar-brand" href="/calendar">Календарь</a>
         </li>
-        {% if request.user.is_clinic %}
+        {% if request.user.is_clinic or request.user.is_doctor %}
         <li class="nav-item">
-            <a class="navbar-brand" href="/create_event">Создать событие</a>
+            <a class="navbar-brand" href="/create_event">Запланировать встречу</a>
         </li>
         {% endif %}
         {% if request.user.is_patient %}

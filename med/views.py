@@ -3,7 +3,7 @@ import os
 from tokenize import triple_quoted
 from django.conf import settings as sttgs
 from django.db.models import Count
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
@@ -150,7 +150,7 @@ def calendar(request):
 
 def create_event(request):
     user = request.user
-    if not user.is_clinic:
+    if not user.is_clinic and not user.is_doctor:
         return HttpResponseForbidden()
     if request.method == "POST":
         name = request.POST['name']
@@ -166,16 +166,24 @@ def create_event(request):
         for i in user_id_list:
             event.users.add(User.objects.get(id=int(i)))
             event.save()
+        
+        return redirect('calendar')
 
     users = User.objects.exclude(id=user.id).exclude(is_staff=True)
-    users_p = Treatment.objects.values_list('patient', flat=True).filter(clinic=user.id)
-    users_p = Patient.objects.filter(pk__in=users_p)
-    users_d = user.clinic.doctor_set.all()
+    # users_p = Treatment.objects.values_list('patient', flat=True).filter(clinic=user.id)
+    # users_p = Patient.objects.filter(pk__in=users_p)
+    users_d = []
+    if user.is_clinic:
+        users_d = user.clinic.doctor_set.all()
+    elif user.is_doctor:
+        in_clinics = user.doctor.clinics.all()
+        for cl in in_clinics:
+            users_d.append({'name': cl.user.first_name, 'doctors': cl.doctor_set.all().exclude(user=user)})
     context = {
         'notifications_count': len(user.notification_set.all()),
         'users': users,
         'list_size': min(len(users), 10) + 3,
-        'users_p': users_p,
+        # 'users_p': users_p,
         'users_d': users_d,
     }
     return render(request, 'med/create_event.html', context)

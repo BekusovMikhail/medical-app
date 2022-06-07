@@ -7,6 +7,7 @@
 
 
 # from . import models
+import email
 import pandas
 from datetime import time
 import random
@@ -29,7 +30,9 @@ class Command(BaseCommand):
 
 
     def parseScheduleAndDoctors (self, path=None):
-        medics = pandas.read_excel(path)
+        #medics = pandas.read_excel(path)
+        medics = pandas.read_csv(path,  encoding='windows-1251')
+        medics['Срок действия'] = pandas.to_datetime(medics['Срок действия'])
         print(medics)
         for i in range(len(medics)):
             schedule = Schedule()
@@ -48,7 +51,10 @@ class Command(BaseCommand):
             us.first_name = medics.iloc[i]['Имя'].strip()
             us.last_name = medics.iloc[i]['Фамилия'].strip()
             us.patronymic = medics.iloc[i]['Отчество'].strip()
-            us.email = medics.iloc[i]['Email'].strip()
+            email_field = medics.iloc[i]['Email'].strip()
+            while len(User.objects.filter(email=email_field)) > 0:
+                email_field = '1' + email_field
+            us.email = email_field
             us.phone = medics.iloc[i]['Номер телефона'].strip()
             us.is_doctor = True
             #us.set_password("".join([chr(random.randint(65, 65+25) + int(random.choice([0, 32]))) for _ in range(12)]))
@@ -111,6 +117,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.parseClinics(r"med/excel_files/Kliniki.xls")
-        self.parseScheduleAndDoctors(r"med/excel_files/Vrachi.xls")
+        self.parseScheduleAndDoctors(r"med/excel_files/Vrachi.csv")
         self.parseProcedures(r"med/excel_files/Protsedury.xls")
 

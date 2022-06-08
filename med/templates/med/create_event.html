@@ -42,8 +42,10 @@
         <label for="instructions" class="form-label">Выберите тип события*</label>
         <select name="type" style="margin-bottom: 20px;" class="form-select" aria-label="Default select example">
             <option value="Консилиум">Консилиум</option>
+            {% if request.user.is_clinic %}
             <option value="Организационное собрание">Организационное собрание</option>
             <option value="Собрание SCRUM">Собрание SCRUM</option>
+            {% endif %}
         </select>
     </div>
     <div class="mb-3">

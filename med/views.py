@@ -17,6 +17,13 @@ import plotly.express as px
 from django.db.models.functions import TruncMonth
 from numpy import mean
 
+
+def default(request):
+    if request.user.is_authenticated:
+        return redirect('dash')
+    
+    return render(request, 'med/default.html')
+
 def index(request):
     if request.method == "POST":
         email = request.POST['email']

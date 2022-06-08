@@ -74,6 +74,8 @@ function checkRoleAddSpec(radioRole) {
     document.getElementById("patronymicField").hidden = false;
     document.getElementById("patronymic").required = true;
     document.getElementById("extraCheck").hidden = false;
+    document.getElementById("extra").hidden = true;
+    document.getElementById("flexCheckDefault").checked = false;
 
     if (radioValue == "doctor") {
       document.getElementById('for_patient').hidden = true;

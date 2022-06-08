@@ -1,5 +1,9 @@
 body {
-    height: 100vh;
+    overflow-x: hidden;
+}
+.main-container {
+    height: 200vh;
+    max-width: 100%;
     background-color: ghostwhite;
     display: flex;
     flex-direction: row;
@@ -9,4 +13,13 @@ body {
 
 .main-radio-role {
     text-align: center;
+}
+
+.card {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.card-body {
+    max-width: 100%;
 }

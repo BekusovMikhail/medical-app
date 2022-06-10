@@ -14,7 +14,7 @@ def doctor_ratings_plot(user):
     nums_avg = []
     for i in range(len(nums)):
         nums_avg.append(np.mean(nums[:i+1]))
-    l = plotly.graph_objects.Layout(
+    l = plotly.graph_objs.Layout(
         xaxis={'fixedrange': True},
         yaxis={'fixedrange': True})
     if not dates:
@@ -50,7 +50,7 @@ def doctor_treatments_plot(user):
         today = today.replace(day=1)
     counts.reverse()
     months.reverse()
-    l = plotly.graph_objects.Layout(
+    l = plotly.graph_objs.Layout(
         xaxis={'fixedrange': True},
         yaxis={'fixedrange': True})
     # data = user.doctor.treatment_set.annotate(month=TruncMonth('creationDate')).values('month').annotate(c=Count('id')).order_by()
@@ -78,7 +78,7 @@ def doctor_procedures_plot(user):
         today = today.replace(day=1)
     counts.reverse()
     months.reverse()
-    l = plotly.graph_objects.Layout(
+    l = plotly.graph_objs.Layout(
         xaxis={'fixedrange': True},
         yaxis={'fixedrange': True})
     fig = px.bar(x=list(map(lambda x: x.strftime("%B %Y"), months)), y=counts,
@@ -112,7 +112,7 @@ def patient_treatments_plot(user):
         today = today.replace(day=1)
     counts.reverse()
     months.reverse()
-    l = plotly.graph_objects.Layout(
+    l = plotly.graph_objs.Layout(
         xaxis={'fixedrange': True},
         yaxis={'fixedrange': True})
     fig = px.bar(x=list(map(lambda x: x.strftime("%B %Y"), months)), y=counts,
@@ -139,7 +139,7 @@ def patient_procedures_plot(user):
         today = today.replace(day=1)
     counts.reverse()
     months.reverse()
-    l = plotly.graph_objects.Layout(
+    l = plotly.graph_objs.Layout(
         xaxis={'fixedrange': True},
         yaxis={'fixedrange': True})
     fig = px.bar(x=list(map(lambda x: x.strftime("%B %Y"), months)), y=counts,
@@ -162,7 +162,7 @@ def clinic_treatment_plot(user):
         today = today.replace(day=1)
     counts.reverse()
     months.reverse()
-    l = plotly.graph_objects.Layout(
+    l = plotly.graph_objs.Layout(
         xaxis={'fixedrange': True},
         yaxis={'fixedrange': True})
     fig = px.bar(x=list(map(lambda x: x.strftime("%B %Y"), months)), y=counts,
@@ -189,7 +189,7 @@ def clinic_procedures_plot(user):
         today = today.replace(day=1)
     counts.reverse()
     months.reverse()
-    l = plotly.graph_objects.Layout(
+    l = plotly.graph_objs.Layout(
         xaxis={'fixedrange': True},
         yaxis={'fixedrange': True})
     fig = px.bar(x=list(map(lambda x: x.strftime("%B %Y"), months)), y=counts,
@@ -211,7 +211,7 @@ def clinic_ratings_plot(user):
     if not marks:
         return False
     marks = sorted(marks.items(), key=lambda x: x[0])
-    l = plotly.graph_objects.Layout(
+    l = plotly.graph_objs.Layout(
         xaxis={'fixedrange': True},
         yaxis={'fixedrange': True})
     fig = px.bar(x=list(map(lambda x: x[0], marks)), y=list(map(lambda x: x[1], marks)),

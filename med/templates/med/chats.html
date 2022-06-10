@@ -1,14 +1,17 @@
 {% extends "med/base.html" %}
+{% load static %}
+
 {% block content %}
-  <div class="container" style="display:flex; flex-direction:row; justify-content:center;">
-    <div class="card" style="width: 18rem; margin-top: 1rem; margin-right: 1rem;">
+  <link rel="stylesheet" href="{% static 'med/css/chats.css' %}">
+
+  <div class="content">
+    <div class="card chats">
     <div class="card-header" style="display:flex; justify-content: space-between; align-items: center;">
-      <div>Chats</div>
+      <div>Чаты</div>
       <button class="btn btn-primary" id="collapseButton" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Создать чат</button>
       <script>
         function handleClick()
         {
-          console.log( this.textContent);
           this.textContent = (this.textContent == 'Создать чат' ? 'Закрыть' : 'Создать чат');
         }
         document.getElementById('collapseButton').onclick=handleClick;
@@ -17,7 +20,13 @@
      <div class="card-body" style="padding:0.5rem; overflow: auto;">
       {% if users.count > 0 %}
         {% for user in users %}
-          <a href="/chat?with={{user.id}}" class="list-group-item list-group-item-action">{{ user.first_name }} {{ user.last_name }}</a>
+            {% if user.is_doctor %}
+            <div class="user-item" onclick="window.location.href = '/chat?with={{user.id}}'"><img src="{{ user.avatar.url }}" alt="Avatar" class="avatar"> <div class="user-info"><b>{{ user.last_name }} {{ user.first_name }} {{ user.patronymic }}</b><p>{{ user.doctor.specialization }}</p></div></div>
+            {% elif user.is_clinic %}
+            <div class="user-item" onclick="window.location.href = '/chat?with={{user.id}}'"><img src="{{ user.avatar.url }}" alt="Avatar" class="avatar"> <div class="user-info"><b>{{ user.first_name }}</b></div></div>
+            {% else %}
+            <div class="user-item" onclick="window.location.href = '/chat?with={{user.id}}'"><img src="{{ user.avatar.url }}" alt="Avatar" class="avatar"> <div class="user-info"><b>{{ user.last_name }} {{ user.first_name }} {{ user.patronymic }}</b></div></div>
+            {% endif %}
         {% endfor %}
       {% endif %} 
      </div>
@@ -25,22 +34,22 @@
     <div class="collapse" id="collapseExample">
     <div class="card" style="width: 18rem; margin-top: 1rem;">
     <div class="card-header" style="display:flex; justify-content: space-between; align-items: center;">
-      <div>Users</div>
+      <div>Пользователи</div>
     </div>
-     <div class="card-body" style="padding:0.5rem; overflow: auto;">
-      {% if new_users.count > 0 %}
-      <div class="list-group" id="usersList">
+     <div class="card-body" style="padding:0.5rem; max-height: 80%; overflow: auto;">
         {% for user in new_users %}
-        <button type="button" class="list-group-item list-group-item-action" id="{{ user.id }}">{{ user.first_name }} {{ user.last_name }}</button>
+            {% if user.is_doctor %}
+            <div class="user-item" onclick="new_user_clicked({{ user.id }})"><img src="{{ user.avatar.url }}" alt="Avatar" class="avatar"> <div class="user-info"><b>{{ user.last_name }} {{ user.first_name }} {{ user.patronymic }}</b><p>{{ user.doctor.specialization }}</p></div></div>
+            {% elif user.is_clinic %}
+            <div class="user-item" onclick="new_user_clicked({{ user.id }})"><img src="{{ user.avatar.url }}" alt="Avatar" class="avatar"> <div class="user-info"><b>{{ user.first_name }}</b></div></div>
+            {% else %}
+            <div class="user-item" onclick="new_user_clicked({{ user.id }})"><img src="{{ user.avatar.url }}" alt="Avatar" class="avatar"> <div class="user-info"><b>{{ user.last_name }} {{ user.first_name }} {{ user.patronymic }}</b></div></div>
+            {% endif %}
         {% endfor %}
-      </div>
-      {% endif %}
       <script>
-        usersList.onclick =  async function(event) {
-          let target = event.target;
-          if (target.tagName != 'BUTTON') return;
+      async function new_user_clicked(nid) {
           let formData = new FormData();
-          formData.append('receiver', target.id)
+          formData.append('receiver', nid)
           let response = await fetch('/api/createchat', {
                 method: 'POST',
                 body: formData

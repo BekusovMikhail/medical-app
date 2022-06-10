@@ -66,7 +66,9 @@ def dash(request):
         plots_list.append(plots.doctor_procedures_plot(user))
     elif user.is_clinic:
         role = 'Клиника'
-        plots_list.append(plots.clinic_ratings_plot(user))
+        plot1 = plots.clinic_ratings_plot(user)
+        if plot1:
+            plots_list.append(plot1)
         plots_list.append(plots.clinic_treatment_plot(user))
         plots_list.append(plots.clinic_procedures_plot(user))
     else:

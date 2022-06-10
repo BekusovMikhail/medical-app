@@ -48,7 +48,7 @@
       } else {
         for (let event of data) {
           // card_body.insertAdjacentHTML('beforeend', `<p class="card-text">${event['date_time']}</p>`)
-          card_body.insertAdjacentHTML('beforeend', `<h5 class="card-title">${event['type']} ${event['date_time'].slice(11, 16)}</h5>`)
+          card_body.insertAdjacentHTML('beforeend', `<h5 class="card-title">${event['date_time'].slice(11, 16)}</h5>`)
           card_body.insertAdjacentHTML('beforeend', `<p class="card-text">${event['name']}</p>`)
           // card_body.insertAdjacentHTML('beforeend', `<p class="card-text">${event['date_time']}</p>`)
           card_body.insertAdjacentHTML('beforeend', `<p class="card-text">${event['description']}</p>`)

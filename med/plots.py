@@ -208,6 +208,8 @@ def clinic_ratings_plot(user):
             marks[t] += 1
         else:
             marks[t] = 1
+    if not marks:
+        return False
     marks = sorted(marks.items(), key=lambda x: x[0])
     l = plotly.graph_objects.Layout(
         xaxis={'fixedrange': True},

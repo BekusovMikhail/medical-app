@@ -15,52 +15,45 @@
      		{% endif %}
      	{% endfor %}
      </div>
-     <script type="text/javascript">
-     	window.onload = () => {
-     		cardBodyChat.scrollTop = cardBodyChat.scrollHeight;
-     	};
-     </script>
      <form id='messageForm' style="display:flex; flex-direction:row; margin:5px;">
         <input type="text" name="text" class="form-control" id="text" placeholder="Введите сообщение" style="margin-right:10px;">
         <input type="submit" id="buttonSend" class="btn btn-primary" value='Отправить'>
         <input type="hidden" name="chatId" value="{{ chat.id }}">
         <input type="hidden" name="sender" value="{{ user1.id }}">
-        <script type="text/javascript">
-	      messageForm.onsubmit = async (e) => {
-	        e.preventDefault();
-
-	        let response = await fetch('/api/sendmessage', {
-	          method: 'POST',
-	          body: new FormData(messageForm)
-	        });
-
-	        let result = await response.text();
-
-	        if (response.status == 201) {
-	          let block = '<div class="list-group-item" style="border: none; text-align: right;">{{user1.first_name}} {{user1.last_name}}: '+ text.value +'</div>'
-	          text.value = ""
-	          cardBodyChat.insertAdjacentHTML("beforeend", block);
-	          cardBodyChat.scrollTop = cardBodyChat.scrollHeight;
-	        } else {
-	          window.location.replace("dashboard");
-	        }
-	      };
-	    </script>
       </form>
-      <script type="text/javascript">
-      	let socket = new WebSocket("ws://{{ ip }}:8081")
+        <script>
+            var socket;
+            window.onload = () => {
+                cardBodyChat.scrollTop = cardBodyChat.scrollHeight;
+                socket = new WebSocket(`ws://${window.location.host}/chat_server/`)
 
-      	socket.onopen = function(e) {
-				  socket.send("{{ chat.id }}&{{ user1.id }}");
-				};
+                socket.onmessage = function(event) {
+                    let data = JSON.parse(event.data);
+                    if (data['from'] == {{ user2.id }} && data['to'] == {{ user1.id }}) {
+                        let block = '<div class="list-group-item" style="border: none; text-align: left;">{{user2.first_name}} {{user2.last_name}}: ' + data['text'] + '</div>'
+                        cardBodyChat.insertAdjacentHTML("beforeend", block);
+                        cardBodyChat.scrollTop = cardBodyChat.scrollHeight;
+                    }
+                };
+            }
+            messageForm.onsubmit = async (e) => {
+                e.preventDefault();
 
-      	socket.onmessage = function(event) {
-            let incomingMessage = event.data;
-            let block = '<div class="list-group-item" style="border: none; text-align: left;">{{user2.first_name}} {{user2.last_name}}: '+ incomingMessage +'</div>'
-            cardBodyChat.insertAdjacentHTML("beforeend", block);
-            cardBodyChat.scrollTop = cardBodyChat.scrollHeight;
-		};
-  		</script>
+                socket.send(JSON.stringify({
+                    text: text.value,
+                    from: {{user1.id}},
+                    to: {{ user2.id }},
+                    chat_id: {{ chat.id }}
+                }));
+
+
+                let block = '<div class="list-group-item" style="border: none; text-align: right;">{{user1.first_name}} {{user1.last_name}}: '+ text.value +'</div>'
+                text.value = ""
+                cardBodyChat.insertAdjacentHTML("beforeend", block);
+                cardBodyChat.scrollTop = cardBodyChat.scrollHeight;
+
+	        };
+        </script>
     </div>
   <!-- </div> -->
 {% endblock content %}

@@ -4,7 +4,6 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidde
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from med.models import *
-from .chatSockets import socketServer
 import os
 import json
 import random
@@ -14,11 +13,11 @@ from email.mime.text import MIMEText
 import datetime
 from django.conf import settings as sttgs
 
-server = socketServer(sttgs.IP)
+
 port = 465  # For SSL
-smtp_server = "smtp.yandex.ru"
-sender_email = "med.application@yandex.ru"
-password = "9*#8r@k7MR.!+jP"
+smtp_server = "smtp.mail.ru"
+sender_email = "medapp@internet.ru"
+password = "ckPFkBwJGG2tjW7qGUGA"
 
 
 @login_required
@@ -31,24 +30,6 @@ def createChat(request):
         user2 = User.objects.get(id=request.POST['receiver'])
         chat.users.add(user1, user2)
         chat.save()
-        return HttpResponse(status=201)
-    else:
-        return HttpResponseForbidden("Forbidden")
-
-
-@login_required
-@csrf_exempt
-def sendMessage(request):
-    if request.method == "POST":
-        mes = Message()
-        mes.chat = Chat.objects.get(id=request.POST['chatId'])
-        mes.text = request.POST['text']
-        mes.sender = request.POST['sender']
-        mes.save()
-        target = mes.chat.users.exclude(id=mes.sender).first()
-        notification = Notification(user=target, text=mes.text, sender=User.objects.get(id=mes.sender), name="ChatNot")
-        notification.save()
-        server.send_message(mes.chat.id, target.id, mes.text)
         return HttpResponse(status=201)
     else:
         return HttpResponseForbidden("Forbidden")

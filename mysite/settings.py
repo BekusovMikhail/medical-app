@@ -35,6 +35,7 @@ LOGIN_URL = '/'
 AUTH_USER_MODEL = 'med.User'
 
 INSTALLED_APPS = [
+    'channels',
     'med',
     'api',
     'django.contrib.admin',
@@ -75,7 +76,14 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'mysite.wsgi.application'
+ASGI_APPLICATION = 'mysite.asgi.application'
 
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer'
+    }
+}
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases

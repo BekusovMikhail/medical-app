@@ -41,7 +41,7 @@
         let result = await response.text();
 
         if (response.status == 403) {
-          block = '<div class="mb-3"><div class="alert alert-danger alert-dismissible fade show" role="alert" style="flex:0.5">Wrong username or password<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div></div>'
+          block = '<div class="mb-3"><div class="alert alert-danger alert-dismissible fade show" role="alert" style="flex:0.5">Неверная почта или пароль<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div></div>'
           passId.insertAdjacentHTML("afterend", block);
         } else {
           window.location.replace("dashboard");

@@ -254,7 +254,7 @@ def account(request):
         'usr': usr,
         'fullname': fullname,
         'error': error if error else None,
-        'notifications_count': len(request.user.notification_set.all()),
+        # 'notifications_count': len(request.user.notification_set.all()),
     }
     return render(request, 'med/account.html', context)
 

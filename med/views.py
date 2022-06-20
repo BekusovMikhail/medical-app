@@ -106,7 +106,11 @@ def chat(request):
         messages = chat.message_set.all()
         return render(request, 'med/chat.html', {"user1": user1, "user2": user2, "chat": chat, "messages": messages, "ip": sttgs.IP})
     else:
-        return HttpResponseRedirect("/chats")
+        chat = Chat()
+        chat.save()
+        chat.users.add(user1, user2)
+        chat.save()
+        return render(request, 'med/chat.html', {"user1": user1, "user2": user2, "chat": chat, "messages": [], "ip": sttgs.IP})
 
 
 @login_required
@@ -402,7 +406,7 @@ def user_treatment_panel(request):
         rating = None
     curr_procs = treat.currentprocedure_set.all().order_by('id')
     procs = Procedure.objects.all()
-    return render(request, 'med/user_treatment_panel.html', context={'treatment': treat, 'curr_procs': curr_procs, 'procs': procs, 'user':request.user, 'rating': rating})
+    return render(request, 'med/user_treatment_panel.html', context={'treatment': treat, 'curr_procs': curr_procs, 'procs': procs, 'user': request.user, 'rating': rating})
 
 @login_required
 def my_patients(request):

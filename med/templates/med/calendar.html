@@ -88,7 +88,7 @@
         <div class="modal-content">
             <div class="modal-header" id="card_header" style="display: flex; flex-direction: row; align-items: center;">
             </div>
-            <div class="modal-body" id="card_body" style="overflow-y: auto; height: 94%">
+            <div class="modal-body" id="card_body" style="overflow-y: auto; height: 94%;">
             </div>
             <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closeButton">Закрыть</button>
@@ -96,6 +96,13 @@
         </div>
     </div>
 </div>
+
+<style>
+   #card_body > * {
+        white-space: pre-wrap;
+   }
+</style>
+
 <script type="text/javascript">
   closeButton.onclick = closeClicked
   let elements = document.querySelectorAll('.monthday');

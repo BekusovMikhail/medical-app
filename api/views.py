@@ -289,7 +289,7 @@ def addCurrProcedure(request):
     e.save()
     e.users.add(request.user, currProc.treatment.patient.user, currProc.treatment.clinic.user)
     e.name = currProc.procedure.name
-    e.description = f'Patient: {currProc.treatment.patient.user.first_name} {currProc.treatment.patient.user.last_name}\nDoctor: {currProc.treatment.doctor.user.first_name} {currProc.treatment.doctor.user.last_name}'
+    e.description = f'Пациент: {currProc.treatment.patient.user.first_name} {currProc.treatment.patient.user.last_name}\n Доктор: {currProc.treatment.doctor.user.first_name} {currProc.treatment.doctor.user.last_name}'
     e.instructions = currProc.procedure.steps
     e.save()
 
